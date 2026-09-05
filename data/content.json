@@ -1,0 +1,312 @@
+{
+  "content": {
+    "nav_logo": "SVANTHAM",
+    "nav_suite": "The suite",
+    "nav_why": "Why Svantham",
+    "nav_playbook": "How it works",
+    "nav_deployments": "Deployments",
+    "nav_cta": "Talk to us",
+    "hero_kicker": "Business software, on your terms.",
+    "hero_title_line1": "Own your",
+    "hero_title_highlight": "operations.",
+    "hero_description": "The all-in-one business suite for Indian MSMEs. Unlimited users, no artificial limits. Fixed costs. Your data, your infrastructure, your way.",
+    "hero_cta_primary": "See the suite",
+    "hero_cta_secondary": "Why leave SaaS?",
+    "hero_tag_one_top": "UNLIMITED",
+    "hero_tag_one_bottom": "USERS",
+    "hero_tag_two_top": "BUILT",
+    "hero_tag_two_bottom": "TO LAST",
+    "cost_eyebrow": "The old deal is broken",
+    "cost_title_line1": "Stop renting",
+    "cost_title_highlight": "your own data.",
+    "cost_story": "Every new hire shouldn't mean another monthly invoice. Every feature shouldn't mean another upgrade. And your business shouldn't be held hostage by an internet connection.",
+    "cost_cta": "Meet a better model",
+    "cost_table_head_left": "THE MATH OF SOFTWARE",
+    "cost_table_head_right": "5-YEAR VIEW",
+    "saas_row_title": "Typical SaaS",
+    "saas_row_subtitle": "per user, per month",
+    "saas_row_price": "₹ 18,00,000",
+    "saas_row_note": "and climbing",
+    "svantham_row_title": "Svantham",
+    "svantham_row_subtitle": "yearly license (unlimited users)",
+    "svantham_row_price": "₹ 7,50,000",
+    "svantham_row_note": "your fixed cost",
+    "saving_badge_prefix": "Save up to",
+    "saving_badge_highlight": "₹10.5L",
+    "saving_badge_suffix": "over 5 years",
+    "suite_eyebrow": "One suite. Zero silos.",
+    "suite_title_line1": "Everything your",
+    "suite_title_highlight": "business needs.",
+    "suite_description": "Six focused modules. One calm command center. Start where you are, add what you need, and never pay for the seats you don't.",
+    "suite_dossier_label": "Selected system",
+    "suite_dossier_cta": "Request a walkthrough",
+    "deployment_eyebrow": "Your infrastructure. Your call.",
+    "deployment_title_line1": "Cloud when useful.",
+    "deployment_title_highlight": "Local when it matters.",
+    "deployment_description": "Run Svantham on your server, on a local appliance, or in a cloud you control. Your operations don't stop because the Wi-Fi does. Your data doesn't leave unless you say so.",
+    "deployment_contact_btn": "Start a conversation",
+    "deployment_contact_sub": "Direct WhatsApp or email inquiry",
+    "contact_whatsapp_number": "917845299722",
+    "contact_email": "hello@svantham.in",
+    "footer_wordmark": "SVANTHAM",
+    "footer_link_suite": "Suite",
+    "footer_link_why": "The case",
+    "footer_link_contact": "Contact",
+    "footer_copyright": "© 2026 Svantham Software",
+    "seo_title": "Svantham — Own your operations",
+    "seo_description": "The all-in-one business suite for Indian MSMEs. Unlimited users, fixed costs, and your data on your infrastructure.",
+    "seo_og_title": "Svantham — Own your operations",
+    "seo_og_description": "The all-in-one business suite for Indian MSMEs. Unlimited users, no artificial limits.",
+    "seo_og_image": "/logo.png",
+    "toast_custom_made": "Want something else? We can build it for you.",
+    "toast_visit_btn": "Visit here",
+    "calc_team_size_label": "TEAM SIZE",
+    "calc_timeframe_label": "TIMEFRAME",
+    "calc_users_suffix": "users",
+    "calc_years_suffix": "years",
+    "calc_lifetime_label": "Lifetime",
+    "calc_lifetime_view": "LIFETIME VIEW",
+    "calc_year_view_suffix": "-YEAR VIEW",
+    "calc_save_up_to": "Save up to",
+    "calc_over": "over"
+  },
+  "modules": [
+    {
+      "id": "poss",
+      "code": "01",
+      "name": "POSS",
+      "eyebrow": "Retail core",
+      "description": "Point of sale and sync that keeps every counter moving.",
+      "context": "Multi-branch retail and wholesale billing engineered to run at full speed even when the internet is completely cut.",
+      "features": [
+        "Offline-first checkout with zero counter freeze",
+        "Instant multi-branch stock transfers and reconciliation",
+        "Automated GST, HSN, and landed-cost calculation"
+      ],
+      "tags": [
+        "OFFLINE-FIRST",
+        "LOCAL LAN",
+        "ZERO TAX PER SEAT"
+      ],
+      "accent": "chartreuse",
+      "image": ""
+    },
+    {
+      "id": "crm",
+      "code": "02",
+      "name": "CRM",
+      "eyebrow": "WhatsApp-native",
+      "description": "Turn everyday chats into follow-ups, orders, and retained customers.",
+      "context": "B2B sales in India happen on WhatsApp. Svantham turns conversations into tracked pipelines, quotations, and closed deals.",
+      "features": [
+        "Shared team WhatsApp inbox with unlimited telecaller seats",
+        "Automated quotation dispatch and order status pings",
+        "Call dispositions and customer transaction history"
+      ],
+      "tags": [
+        "WHATSAPP NATIVE",
+        "SHARED INBOX",
+        "UNLIMITED CALLERS"
+      ],
+      "accent": "coral",
+      "image": ""
+    },
+    {
+      "id": "hrms",
+      "code": "03",
+      "name": "HRMS",
+      "eyebrow": "Blue-collar ready",
+      "description": "Attendance, payroll, and people ops built for the real workforce.",
+      "context": "Built for factory floors, retail chains, and field crews. No per-employee pricing tiers that punish hiring.",
+      "features": [
+        "Biometric & selfie punch-in ready with geo-tagging",
+        "Daily wage, overtime, and kharcha cash advance ledger",
+        "One-click compliant payroll run via standard bank formats"
+      ],
+      "tags": [
+        "BIOMETRIC SYNC",
+        "KHARCHA LEDGER",
+        "NO EMPLOYEE TAX"
+      ],
+      "accent": "ink",
+      "image": ""
+    },
+    {
+      "id": "job",
+      "code": "04",
+      "name": "Job-Work",
+      "eyebrow": "Manufacturing MRP",
+      "description": "Trace materials, jobs, and output without spreadsheet archaeology.",
+      "context": "Track raw material dispatch to subcontractors, process loss, and finished goods assembly with full audit visibility.",
+      "features": [
+        "Delivery challans with scrap & wastage tracking",
+        "Multi-stage vendor job work tracking and reconciliations",
+        "Bill of Materials (BOM) costing and yield variance analysis"
+      ],
+      "tags": [
+        "MRP ROUTING",
+        "JOB CHIKITSA",
+        "CHALLAN AUDIT"
+      ],
+      "accent": "chartreuse",
+      "image": ""
+    },
+    {
+      "id": "fsm",
+      "code": "05",
+      "name": "FSM",
+      "eyebrow": "Field dispatch",
+      "description": "Send the right person to the right job with less phone-tag.",
+      "context": "Dispatch industrial technicians, maintenance teams, and installers with offline mobile job cards and signatures.",
+      "features": [
+        "Offline Android job cards with customer e-signature",
+        "Service ticket lifecycle and technician location dispatch",
+        "Spares consumption tracking with warranty expiry alerts"
+      ],
+      "tags": [
+        "OFFLINE JOBS",
+        "TECHNICIAN RADAR",
+        "WARRANTY TRACK"
+      ],
+      "accent": "coral",
+      "image": ""
+    },
+    {
+      "id": "oms",
+      "code": "06",
+      "name": "OMS",
+      "eyebrow": "Dealer portal",
+      "description": "Give your B2B network a faster way to order and grow.",
+      "context": "A dedicated B2B portal for your distributor and retailer network with tiered trade credit and live warehouse availability.",
+      "features": [
+        "Tiered wholesale pricing and dealer credit limit control",
+        "Real-time warehouse stock visibility for verified dealers",
+        "Zero transaction fee ordering with direct dispatch queuing"
+      ],
+      "tags": [
+        "DEALER PORTAL",
+        "TIER PRICING",
+        "ZERO FEES"
+      ],
+      "accent": "ink",
+      "image": ""
+    }
+  ],
+  "dashboardViews": [
+    {
+      "id": "poss",
+      "tabLabel": "LIVE OPS",
+      "badge": "SVANTHAM / LIVE OPS",
+      "statusText": "SYNCED",
+      "subtitle": "TODAY'S CONTROL ROOM",
+      "heading": "Good morning, Anil.",
+      "metric1": {
+        "label": "ORDERS MOVED",
+        "val": "1,284",
+        "sub": "+18.4%"
+      },
+      "metric2": {
+        "label": "FIELD JOBS",
+        "val": "48",
+        "sub": "12 due today"
+      },
+      "chartTitle": "ORDER VELOCITY",
+      "chartSubtitle": "this week",
+      "activity1": {
+        "title": "Ramesh Wholesale synced",
+        "subtitle": "Order #SV-10482 · just now",
+        "type": "check"
+      },
+      "activity2": {
+        "title": "Payroll run completed",
+        "subtitle": "42 employees · 8:42 AM",
+        "type": "zap"
+      }
+    },
+    {
+      "id": "crm",
+      "tabLabel": "CRM",
+      "badge": "SVANTHAM / CRM",
+      "statusText": "8 AGENTS ONLINE",
+      "subtitle": "WHATSAPP DESK",
+      "heading": "342 Active Conversations",
+      "metric1": {
+        "label": "INCOMING LEADS",
+        "val": "186",
+        "sub": "+34 today"
+      },
+      "metric2": {
+        "label": "QUOTES SENT",
+        "val": "₹ 14.8L",
+        "sub": "28 approved"
+      },
+      "chartTitle": "MESSAGE VELOCITY",
+      "chartSubtitle": "avg 2.1m response",
+      "activity1": {
+        "title": "Mahalaxmi Steel quotation approved",
+        "subtitle": "Order value: ₹2,40,000 · 3m ago",
+        "type": "check"
+      },
+      "activity2": {
+        "title": "Broadcast delivered: Festive Pricing",
+        "subtitle": "840 dealers received · 9:15 AM",
+        "type": "zap"
+      }
+    },
+    {
+      "id": "hrms",
+      "tabLabel": "HRMS",
+      "badge": "SVANTHAM / HRMS",
+      "statusText": "BIOMETRIC LIVE",
+      "subtitle": "FLOOR ATTENDANCE",
+      "heading": "Shift A: 148 on floor",
+      "metric1": {
+        "label": "PUNCH RATIO",
+        "val": "98.2%",
+        "sub": "4 pending"
+      },
+      "metric2": {
+        "label": "KHARCHA DISBURSED",
+        "val": "₹ 18,400",
+        "sub": "12 approved"
+      },
+      "chartTitle": "SHIFT ATTENDANCE",
+      "chartSubtitle": "day shift running",
+      "activity1": {
+        "title": "Biometric Gate 2 sync completed",
+        "subtitle": "64 worker logs verified · 8:01 AM",
+        "type": "check"
+      },
+      "activity2": {
+        "title": "Advance salary disbursement via UPI",
+        "subtitle": "₹32,000 cleared · 10:30 AM",
+        "type": "zap"
+      }
+    }
+  ],
+  "deploymentCards": [
+    {
+      "code": "01 / BYOI",
+      "title": "Use your own server.",
+      "description": "Your existing machine, local network and rules. Zero cloud dependencies when you want full physical control."
+    },
+    {
+      "code": "02 / SVANTHAM BOX",
+      "title": "Plug in a ready-to-run appliance.",
+      "description": "A compact, power-efficient local server pre-configured with Svantham Core for your local team."
+    },
+    {
+      "code": "03 / HYBRID SYNC",
+      "title": "Keep a cloud bridge when you choose.",
+      "description": "Remote visibility and cross-branch sync without surrendering your operational foundation to SaaS lock-in."
+    }
+  ],
+  "ticker": [
+    "NO PER-SEAT TAX",
+    "OFFLINE-FIRST",
+    "BYOI READY",
+    "FIXED COSTS",
+    "NO DATA HOSTAGE",
+    "LOCAL LAN SYNC"
+  ]
+}
