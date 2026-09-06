@@ -127,11 +127,8 @@ export default function HomeClient({ initialData }: { initialData: SvanthamData 
           <a href="#why" onClick={() => setMenuOpen(false)}>
             {content.nav_why}
           </a>
-          <a href="#deployment" onClick={() => setMenuOpen(false)}>
-            {content.nav_deployments}
-          </a>
-          <button
-            type="button"
+          <a
+            href="#deployments"
             onClick={() => {
               setMenuOpen(false);
               setContactModalOpen(true);
@@ -139,7 +136,7 @@ export default function HomeClient({ initialData }: { initialData: SvanthamData 
             className="nav-cta"
           >
             {content.nav_cta} <ArrowUpRightIcon />
-          </button>
+          </a>
         </div>
 
         <button
@@ -346,24 +343,30 @@ export default function HomeClient({ initialData }: { initialData: SvanthamData 
           <span>Scroll Down</span>
           <ArrowDown size={14} />
         </div>
+
+
       </section>
 
       {/* Benefits Ticker */}
       <section className="ticker" aria-label="Svantham benefits">
         <div className="ticker-track">
-          {ticker.map((item, i) => (
-            <React.Fragment key={i}>
-              <span>{item}</span>
-              <b>✳</b>
-            </React.Fragment>
-          ))}
+          <div className="ticker-content">
+            {[...ticker, ...ticker, ...ticker, ...ticker].map((item, i) => (
+              <React.Fragment key={i}>
+                <span>{item}</span>
+                <b>✦</b>
+              </React.Fragment>
+            ))}
+          </div>
           {/* Double track for seamless loop */}
-          {ticker.map((item, i) => (
-            <React.Fragment key={`dup-${i}`}>
-              <span>{item}</span>
-              <b>✳</b>
-            </React.Fragment>
-          ))}
+          <div className="ticker-content">
+            {[...ticker, ...ticker, ...ticker, ...ticker].map((item, i) => (
+              <React.Fragment key={`dup-${i}`}>
+                <span>{item}</span>
+                <b>✦</b>
+              </React.Fragment>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -407,14 +410,13 @@ export default function HomeClient({ initialData }: { initialData: SvanthamData 
               <div className="calc-header">
                 <label>{content.calc_timeframe_label}</label>
                 <div className="calc-value">
-                  {calcYears > 5 ? (content.calc_lifetime_label) : calcYears}
-                  {calcYears > 5 ? <span> ({calcYears} {content.calc_years_suffix})</span> : <span> {content.calc_years_suffix}</span>}
+                  {calcYears}<span> {calcYears > 1 ? content.calc_years_suffix : 'year'}</span>
                 </div>
               </div>
               <input
                 type="range"
                 min="1"
-                max="10"
+                max="5"
                 value={calcYears}
                 onChange={(e) => setCalcYears(parseInt(e.target.value))}
                 className="custom-slider"
@@ -425,14 +427,14 @@ export default function HomeClient({ initialData }: { initialData: SvanthamData 
           <div className="comparison-head">
             <span>
               {content.cost_table_head_left}
-              <span style={{ opacity: 0.6, fontSize: '9px', marginLeft: '12px', letterSpacing: '0' }}>*Assumed SaaS rate: ₹{saasRatePerMonth}/mo</span>
             </span>
-            <span>{calcYears > 5 ? (content.calc_lifetime_view) : `${calcYears}${content.calc_year_view_suffix}`}</span>
+            <span>{`${calcYears}-YEAR BILL`}</span>
           </div>
 
           <div className="comparison-row">
-            <span>
-              {content.saas_row_title}
+            <span style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <span>{content.saas_row_title}</span>
+              <span style={{ opacity: 0.6, fontSize: '11px', letterSpacing: '0', fontWeight: 'normal' }}>*Assumed SaaS rate: ₹{saasRatePerMonth}/user/mo</span>
             </span>
             <strong className="price-red price-align">
               {formatCurrency(saasTotal)}
@@ -440,8 +442,9 @@ export default function HomeClient({ initialData }: { initialData: SvanthamData 
           </div>
 
           <div className="comparison-row highlighted">
-            <span>
+            <span style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
               {content.svantham_row_title}
+              <span style={{ opacity: 0.6, fontSize: '11px', letterSpacing: '0', fontWeight: 'normal' }}>*License Cost (without AMC)</span>
             </span>
             <strong className="price-align">
               {formatCurrency(svanthamTotal)}
@@ -449,7 +452,7 @@ export default function HomeClient({ initialData }: { initialData: SvanthamData 
           </div>
 
           <div className="saving-badge">
-            <Zap size={15} /> {content.calc_save_up_to} <b>{formatCurrency(Math.max(0, costDifference))}</b> {content.calc_over} {calcYears} {content.calc_years_suffix}
+            <Zap size={15} /> {content.calc_save_up_to} <b>{formatCurrency(Math.max(0, costDifference))}</b> {content.calc_over} {calcYears} {calcYears > 1 ? content.calc_years_suffix : 'year'}
           </div>
         </div>
       </section>
@@ -504,10 +507,8 @@ export default function HomeClient({ initialData }: { initialData: SvanthamData 
         </div>
       </section>
 
-
-
       {/* Deployment Section (Replaced cta-section with 3D Stack + Contact Button) */}
-      <section className="deployment-section section-shell" id="deployment">
+      <section className="deployment-section section-shell" id="deployments">
         <div className="deployment-card">
           <div className="deployment-grid">
             <div className="deployment-copy reveal">
@@ -574,7 +575,7 @@ export default function HomeClient({ initialData }: { initialData: SvanthamData 
                     type="text"
                     value={contactCompany}
                     onChange={(e) => setContactCompany(e.target.value)}
-                    placeholder="Acme Mfg"
+                    placeholder="XYZ LLP"
                     className="w-full bg-white/30 border border-[#270d14]/10 rounded-xl p-3 text-sm text-[#270d14] placeholder-[#270d14]/40 outline-none focus:border-[#270d14] transition"
                   />
                 </div>
@@ -623,4 +624,16 @@ export default function HomeClient({ initialData }: { initialData: SvanthamData 
     </main>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
 

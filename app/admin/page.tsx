@@ -7,7 +7,7 @@ export default function AdminPage() {
   const [data, setData] = useState<SvanthamData | null>(null);
   const [status, setStatus] = useState('');
   const [search, setSearch] = useState('');
-  const [activeSectionFilter, setActiveSectionFilter] = useState<string>('all');
+  const [activePage, setActivePage] = useState<string>('home');
   const [activeTab, setActiveTab] = useState<'modules' | 'dashboard' | 'deployment' | 'ticker'>('modules');
   const [loaded, setLoaded] = useState(false);
   const [pin, setPin] = useState('');
@@ -29,7 +29,7 @@ export default function AdminPage() {
             setAuthenticated(true);
           }
         })
-        .catch(() => {});
+        .catch(() => { });
     }
   }, []);
 
@@ -88,27 +88,17 @@ export default function AdminPage() {
 
   const filteredKeys = useMemo(() => {
     if (!data?.content) return [];
+    if (search.trim() === '') return [];
+    
     const keys = Object.keys(data.content);
-
     return keys.filter((k) => {
       const val = String(data.content[k] || '');
-      const matchesSearch =
-        search.trim() === '' ||
+      return (
         k.toLowerCase().includes(search.toLowerCase()) ||
-        val.toLowerCase().includes(search.toLowerCase());
-
-      if (!matchesSearch) return false;
-
-      if (activeSectionFilter === 'all') return true;
-      if (activeSectionFilter === 'hero' && (k.startsWith('hero_') || k.startsWith('nav_'))) return true;
-      if (activeSectionFilter === 'cost' && (k.startsWith('cost_') || k.startsWith('saas_') || k.startsWith('svantham_') || k.startsWith('saving_'))) return true;
-      if (activeSectionFilter === 'suite' && k.startsWith('suite_')) return true;
-      if (activeSectionFilter === 'deployment' && (k.startsWith('deployment_') || k.startsWith('contact_'))) return true;
-      if (activeSectionFilter === 'footer' && k.startsWith('footer_')) return true;
-
-      return false;
+        val.toLowerCase().includes(search.toLowerCase())
+      );
     });
-  }, [data?.content, search, activeSectionFilter]);
+  }, [data?.content, search]);
 
   // Modules helpers
   const updateModule = (index: number, key: keyof ModuleItem, value: any) => {
@@ -160,6 +150,48 @@ export default function AdminPage() {
       [updated[index], updated[target]] = [updated[target], updated[index]];
       return { ...prev, modules: updated };
     });
+  };
+
+  // Content Image Upload
+  const handleContentImageUpload = async (file: File, contentKey: string) => {
+    setStatus('UPLOADING IMAGE...');
+    try {
+      const res = await fetch('/api/upload-image', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer `,
+        },
+        body: JSON.stringify({
+          filename: file.name,
+          contentType: file.type,
+        }),
+      });
+
+      const resData = await res.json();
+      if (!res.ok || !resData.success) {
+        throw new Error(resData.error || 'Failed to obtain presigned URL');
+      }
+
+      setStatus('UPLOADING DIRECTLY TO R2...');
+      const uploadRes = await fetch(resData.presignedUrl, {
+        method: 'PUT',
+        headers: { 'Content-Type': file.type },
+        body: file,
+      });
+
+      if (!uploadRes.ok) {
+        throw new Error('Upload to Cloudflare R2 failed');
+      }
+
+      updateContent(contentKey, resData.publicUrl);
+      setStatus('UPLOAD COMPLETE ?');
+      setTimeout(() => setStatus(''), 3000);
+    } catch (err: any) {
+      console.error(err);
+      setStatus('UPLOAD ERROR: ' + err.message);
+      alert('Upload failed: ' + err.message);
+    }
   };
 
   // Cloudflare R2 Upload
@@ -288,11 +320,8 @@ export default function AdminPage() {
       <div className="min-h-screen bg-[#0c0e16] flex items-center justify-center text-white p-6 font-sans">
         <style>{`input[type="password"]::-ms-reveal, input[type="password"]::-ms-clear { display: none; }`}</style>
         <form onSubmit={(e) => e.preventDefault()} className="flex flex-col items-center gap-5 text-center max-w-sm w-full">
-          <div className="flex items-center gap-2 tracking-[.2em] font-mono text-xs text-[#b8ef3e] font-bold uppercase">
-            <span className="inline-block w-2 h-2 rounded-full bg-[#b8ef3e] animate-pulse" /> SVANTHAM CMS
-          </div>
-          <h1 className="text-3xl font-bold tracking-tight text-white">Admin Control Room</h1>
-          <p className="text-xs text-white/50 mb-2">Enter 4-digit PIN to authenticate and edit content</p>
+          <h1 className="text-3xl font-bold tracking-tight text-white">Admin CMS</h1>
+          <p className="text-xs text-white/50 mb-2">Enter PIN to authenticate and edit content</p>
           <input
             type="password"
             maxLength={4}
@@ -345,24 +374,18 @@ export default function AdminPage() {
         {/* Top Header */}
         <header className="mb-10 flex flex-wrap items-end justify-between gap-6 border-b border-white/10 pb-8">
           <div>
-            <div className="flex items-center gap-2 text-xs font-mono font-bold tracking-[0.18em] text-[#b8ef3e]">
-              <span className="inline-block w-2 h-2 rounded-full bg-[#b8ef3e]" />
-              UPSTASH REDIS SYNCED
-            </div>
-            <h1 className="mt-2 text-4xl sm:text-5xl font-extrabold tracking-[-0.05em] text-white">Svantham Admin</h1>
+            <h1 className="mt-2 text-4xl sm:text-5xl font-extrabold tracking-[-0.05em] text-white whitespace-nowrap">Svantham CMS</h1>
           </div>
           <div className="flex items-center flex-wrap gap-4">
-            {status && (
-              <span className="text-xs font-mono font-bold tracking-[.14em] text-[#b8ef3e] bg-[#b8ef3e]/10 px-3 py-1.5 rounded-full border border-[#b8ef3e]/20">
-                {status}
-              </span>
-            )}
             <button
               type="button"
               onClick={save}
-              className="rounded-full bg-[#b8ef3e] px-6 py-3 text-xs font-mono font-black tracking-[.14em] text-[#161714] transition hover:bg-white hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(184,239,62,0.3)]"
+              disabled={!!status && (status.includes('SAVING') || status.includes('UPLOADING'))}
+              className={`rounded-full px-6 py-3 text-xs font-mono font-black tracking-[.14em] transition hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(184,239,62,0.3)] ${
+                status ? 'bg-white pointer-events-none text-black' : 'bg-[#b8ef3e] hover:bg-white text-[#161714]'
+              }`}
             >
-              SAVE CHANGES
+              {status || 'SAVE CHANGES'}
             </button>
             <a
               href="/"
@@ -372,20 +395,24 @@ export default function AdminPage() {
             >
               VIEW SITE ↗
             </a>
-            <button
-              type="button"
-              onClick={() => {
-                sessionStorage.removeItem('svantham_admin_pin');
-                setAuthenticated(false);
-                setPin('');
-              }}
-              className="rounded-full border border-white/10 px-4 py-3 text-xs font-mono text-white/50 hover:text-white transition"
-              title="Lock Admin"
-            >
-              LOCK
-            </button>
           </div>
         </header>
+
+        {/* Universal Page Picker */}
+        <div className="mb-8 flex items-center gap-4">
+          <label className="text-xs font-mono font-bold text-white/50 tracking-widest uppercase">Target Page:</label>
+          <select 
+            value={activePage}
+            onChange={(e) => setActivePage(e.target.value)}
+            className="bg-[#12141c] border border-white/20 rounded-xl px-4 py-2.5 text-sm text-white font-mono outline-none focus:border-[#b8ef3e] cursor-pointer"
+          >
+            <option value="home">Home (index)</option>
+            <option value="tailored">Tailored</option>
+            <option value="pos">POS (Coming Soon)</option>
+            <option value="crm">CRM (Coming Soon)</option>
+            <option value="erp">ERP (Coming Soon)</option>
+          </select>
+        </div>
 
         {/* Two-Column Editor Layout */}
         <main className="grid gap-10 lg:grid-cols-[1.1fr_1.4fr] items-start">
@@ -396,23 +423,7 @@ export default function AdminPage() {
               <span className="text-[10px] font-mono text-white/40">{filteredKeys.length} keys</span>
             </div>
 
-            {/* Quick Section Filters */}
-            <div className="flex flex-wrap gap-2 mb-6">
-              {['all', 'hero', 'cost', 'suite', 'deployment', 'footer'].map((sec) => (
-                <button
-                  type="button"
-                  key={sec}
-                  onClick={() => setActiveSectionFilter(sec)}
-                  className={`text-[10px] font-mono font-bold uppercase px-3 py-1 rounded-full border transition ${
-                    activeSectionFilter === sec
-                      ? 'border-[#b8ef3e] bg-[#b8ef3e]/15 text-[#b8ef3e]'
-                      : 'border-white/10 text-white/50 hover:text-white'
-                  }`}
-                >
-                  {sec}
-                </button>
-              ))}
-            </div>
+
 
             {/* Search Input */}
             <input
@@ -436,7 +447,39 @@ export default function AdminPage() {
                     <label className="block text-[10px] font-mono font-bold tracking-[.14em] text-white/40 group-focus-within:text-[#b8ef3e] uppercase mb-1.5 transition">
                       {key}
                     </label>
-                    {isLong ? (
+                    {key.toLowerCase().includes('image') || key.toLowerCase().includes('logo') || key.toLowerCase().includes('icon') || key.toLowerCase().includes('path') ? (
+                      <div className="flex items-center gap-4 bg-white/5 p-2 rounded-xl border border-white/10">
+                        {val && val.startsWith('http') ? (
+                          <div className="w-16 h-16 rounded-lg bg-black/50 overflow-hidden flex-shrink-0 border border-white/10 flex items-center justify-center">
+                            <img src={val} alt="preview" className="max-w-full max-h-full object-contain" />
+                          </div>
+                        ) : (
+                          <div className="w-16 h-16 rounded-lg bg-black/50 border border-white/10 flex-shrink-0 flex items-center justify-center text-[9px] text-white/30 font-mono text-center">NO IMG</div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <input
+                            type="text"
+                            value={val}
+                            onChange={(e) => updateContent(key, e.target.value)}
+                            placeholder="Image URL"
+                            className="w-full bg-transparent text-sm text-white font-mono outline-none placeholder:text-white/20 mb-2 truncate"
+                          />
+                          <label className="cursor-pointer inline-flex items-center justify-center px-3 py-1.5 rounded-lg bg-white/10 hover:bg-[#b8ef3e]/20 text-[#b8ef3e] text-[10px] font-mono font-bold transition border border-white/10 hover:border-[#b8ef3e]/50">
+                            UPLOAD NEW IMAGE
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={(e) => {
+                                if (e.target.files && e.target.files[0]) {
+                                  handleContentImageUpload(e.target.files[0], key);
+                                }
+                              }}
+                            />
+                          </label>
+                        </div>
+                      </div>
+                    ) : isLong ? (
                       <textarea
                         value={val}
                         onChange={(e) => updateContent(key, e.target.value)}
@@ -458,34 +501,32 @@ export default function AdminPage() {
           </section>
 
           {/* Right Column: Structured Data Editors */}
-          <section className="rounded-3xl bg-[#12141c] p-6 sm:p-8 border border-white/10 lg:sticky lg:top-8 lg:max-h-[calc(100vh-5rem)] lg:overflow-y-auto">
+          {activePage === 'home' ? (
+            <section className="rounded-3xl bg-[#12141c] p-6 sm:p-8 border border-white/10 lg:sticky lg:top-8 lg:max-h-[calc(100vh-5rem)] lg:overflow-y-auto">
             {/* Tab Navigation */}
             <div className="flex items-center justify-between flex-wrap gap-4 mb-8 border-b border-white/10 pb-4">
               <div className="flex flex-wrap gap-3">
                 <button
                   type="button"
                   onClick={() => setActiveTab('modules')}
-                  className={`text-[11px] font-mono font-bold tracking-[0.16em] uppercase pb-1 transition ${
-                    activeTab === 'modules' ? 'text-[#b8ef3e] border-b-2 border-[#b8ef3e]' : 'text-white/40 hover:text-white'
-                  }`}
+                  className={`text-[11px] font-mono font-bold tracking-[0.16em] uppercase pb-1 transition ${activeTab === 'modules' ? 'text-[#b8ef3e] border-b-2 border-[#b8ef3e]' : 'text-white/40 hover:text-white'
+                    }`}
                 >
                   MODULES ({data.modules.length})
                 </button>
                 <button
                   type="button"
                   onClick={() => setActiveTab('dashboard')}
-                  className={`text-[11px] font-mono font-bold tracking-[0.16em] uppercase pb-1 transition ${
-                    activeTab === 'dashboard' ? 'text-[#b8ef3e] border-b-2 border-[#b8ef3e]' : 'text-white/40 hover:text-white'
-                  }`}
+                  className={`text-[11px] font-mono font-bold tracking-[0.16em] uppercase pb-1 transition ${activeTab === 'dashboard' ? 'text-[#b8ef3e] border-b-2 border-[#b8ef3e]' : 'text-white/40 hover:text-white'
+                    }`}
                 >
                   DASHBOARD ({data.dashboardViews.length})
                 </button>
                 <button
                   type="button"
                   onClick={() => setActiveTab('deployment')}
-                  className={`text-[11px] font-mono font-bold tracking-[0.16em] uppercase pb-1 transition ${
-                    activeTab === 'deployment' ? 'text-[#b8ef3e] border-b-2 border-[#b8ef3e]' : 'text-white/40 hover:text-white'
-                  }`}
+                  className={`text-[11px] font-mono font-bold tracking-[0.16em] uppercase pb-1 transition ${activeTab === 'deployment' ? 'text-[#b8ef3e] border-b-2 border-[#b8ef3e]' : 'text-white/40 hover:text-white'
+                    }`}
                 >
                   DEPLOYMENT ({data.deploymentCards.length})
                 </button>
@@ -493,9 +534,8 @@ export default function AdminPage() {
                 <button
                   type="button"
                   onClick={() => setActiveTab('ticker')}
-                  className={`text-[11px] font-mono font-bold tracking-[0.16em] uppercase pb-1 transition ${
-                    activeTab === 'ticker' ? 'text-[#b8ef3e] border-b-2 border-[#b8ef3e]' : 'text-white/40 hover:text-white'
-                  }`}
+                  className={`text-[11px] font-mono font-bold tracking-[0.16em] uppercase pb-1 transition ${activeTab === 'ticker' ? 'text-[#b8ef3e] border-b-2 border-[#b8ef3e]' : 'text-white/40 hover:text-white'
+                    }`}
                 >
                   TICKER ({data.ticker.length})
                 </button>
@@ -644,11 +684,10 @@ export default function AdminPage() {
                           type="button"
                           key={acc}
                           onClick={() => updateModule(idx, 'accent', acc)}
-                          className={`text-[10px] font-mono font-bold uppercase px-3 py-1 rounded-full border transition ${
-                            mod.accent === acc
-                              ? 'border-[#b8ef3e] bg-[#b8ef3e]/20 text-[#b8ef3e]'
-                              : 'border-white/10 text-white/40'
-                          }`}
+                          className={`text-[10px] font-mono font-bold uppercase px-3 py-1 rounded-full border transition ${mod.accent === acc
+                            ? 'border-[#b8ef3e] bg-[#b8ef3e]/20 text-[#b8ef3e]'
+                            : 'border-white/10 text-white/40'
+                            }`}
                         >
                           {acc}
                         </button>
@@ -935,8 +974,27 @@ export default function AdminPage() {
               </div>
             )}
           </section>
+          ) : (
+            <section className="rounded-3xl bg-[#12141c] p-6 sm:p-8 border border-white/10 flex items-center justify-center min-h-[400px]">
+              <p className="text-white/40 font-mono text-sm text-center">
+                Interactive blocks for <strong className="text-[#b8ef3e] uppercase">{activePage}</strong><br />are not yet implemented in the CMS.
+              </p>
+            </section>
+          )}
         </main>
       </div>
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+

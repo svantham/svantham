@@ -3,8 +3,6 @@
     "nav_logo": "SVANTHAM",
     "nav_suite": "The suite",
     "nav_why": "Why Svantham",
-    "nav_playbook": "How it works",
-    "nav_deployments": "Deployments",
     "nav_cta": "Talk to us",
     "hero_kicker": "Business software, on your terms.",
     "hero_title_line1": "Own your",
@@ -22,36 +20,21 @@
     "cost_story": "Every new hire shouldn't mean another monthly invoice. Every feature shouldn't mean another upgrade. And your business shouldn't be held hostage by an internet connection.",
     "cost_cta": "Meet a better model",
     "cost_table_head_left": "THE MATH OF SOFTWARE",
-    "cost_table_head_right": "5-YEAR VIEW",
     "saas_row_title": "Typical SaaS",
-    "saas_row_subtitle": "per user, per month",
-    "saas_row_price": "₹ 18,00,000",
-    "saas_row_note": "and climbing",
     "svantham_row_title": "Svantham",
-    "svantham_row_subtitle": "yearly license (unlimited users)",
-    "svantham_row_price": "₹ 7,50,000",
-    "svantham_row_note": "your fixed cost",
-    "saving_badge_prefix": "Save up to",
-    "saving_badge_highlight": "₹10.5L",
-    "saving_badge_suffix": "over 5 years",
     "suite_eyebrow": "One suite. Zero silos.",
     "suite_title_line1": "Everything your",
     "suite_title_highlight": "business needs.",
     "suite_description": "Six focused modules. One calm command center. Start where you are, add what you need, and never pay for the seats you don't.",
-    "suite_dossier_label": "Selected system",
-    "suite_dossier_cta": "Request a walkthrough",
-    "deployment_eyebrow": "Your infrastructure. Your call.",
-    "deployment_title_line1": "Cloud when useful.",
-    "deployment_title_highlight": "Local when it matters.",
-    "deployment_description": "Run Svantham on your server, on a local appliance, or in a cloud you control. Your operations don't stop because the Wi-Fi does. Your data doesn't leave unless you say so.",
+    "deployment_eyebrow": "Freedom of choice",
+    "deployment_title_line1": "The software is yours.",
+    "deployment_title_highlight": "The terms are fair.",
+    "deployment_description": "We don't punish your growth. With Svantham, you're free from predatory SaaS models. Bring your own infrastructure, scale your team indefinitely, and tailor the modules exactly to your workflow.",
     "deployment_contact_btn": "Start a conversation",
     "deployment_contact_sub": "Direct WhatsApp or email inquiry",
     "contact_whatsapp_number": "917845299722",
     "contact_email": "hello@svantham.in",
     "footer_wordmark": "SVANTHAM",
-    "footer_link_suite": "Suite",
-    "footer_link_why": "The case",
-    "footer_link_contact": "Contact",
     "footer_copyright": "© 2026 Svantham Software",
     "seo_title": "Svantham — Own your operations",
     "seo_description": "The all-in-one business suite for Indian MSMEs. Unlimited users, fixed costs, and your data on your infrastructure.",
@@ -64,9 +47,6 @@
     "calc_timeframe_label": "TIMEFRAME",
     "calc_users_suffix": "users",
     "calc_years_suffix": "years",
-    "calc_lifetime_label": "Lifetime",
-    "calc_lifetime_view": "LIFETIME VIEW",
-    "calc_year_view_suffix": "-YEAR VIEW",
     "calc_save_up_to": "Save up to",
     "calc_over": "over"
   },
@@ -83,11 +63,6 @@
         "Instant multi-branch stock transfers and reconciliation",
         "Automated GST, HSN, and landed-cost calculation"
       ],
-      "tags": [
-        "OFFLINE-FIRST",
-        "LOCAL LAN",
-        "ZERO TAX PER SEAT"
-      ],
       "accent": "chartreuse",
       "image": ""
     },
@@ -102,11 +77,6 @@
         "Shared team WhatsApp inbox with unlimited telecaller seats",
         "Automated quotation dispatch and order status pings",
         "Call dispositions and customer transaction history"
-      ],
-      "tags": [
-        "WHATSAPP NATIVE",
-        "SHARED INBOX",
-        "UNLIMITED CALLERS"
       ],
       "accent": "coral",
       "image": ""
@@ -123,11 +93,6 @@
         "Daily wage, overtime, and kharcha cash advance ledger",
         "One-click compliant payroll run via standard bank formats"
       ],
-      "tags": [
-        "BIOMETRIC SYNC",
-        "KHARCHA LEDGER",
-        "NO EMPLOYEE TAX"
-      ],
       "accent": "ink",
       "image": ""
     },
@@ -142,11 +107,6 @@
         "Delivery challans with scrap & wastage tracking",
         "Multi-stage vendor job work tracking and reconciliations",
         "Bill of Materials (BOM) costing and yield variance analysis"
-      ],
-      "tags": [
-        "MRP ROUTING",
-        "JOB CHIKITSA",
-        "CHALLAN AUDIT"
       ],
       "accent": "chartreuse",
       "image": ""
@@ -163,11 +123,6 @@
         "Service ticket lifecycle and technician location dispatch",
         "Spares consumption tracking with warranty expiry alerts"
       ],
-      "tags": [
-        "OFFLINE JOBS",
-        "TECHNICIAN RADAR",
-        "WARRANTY TRACK"
-      ],
       "accent": "coral",
       "image": ""
     },
@@ -183,11 +138,6 @@
         "Real-time warehouse stock visibility for verified dealers",
         "Zero transaction fee ordering with direct dispatch queuing"
       ],
-      "tags": [
-        "DEALER PORTAL",
-        "TIER PRICING",
-        "ZERO FEES"
-      ],
       "accent": "ink",
       "image": ""
     }
@@ -195,8 +145,8 @@
   "dashboardViews": [
     {
       "id": "poss",
-      "tabLabel": "LIVE OPS",
-      "badge": "SVANTHAM / LIVE OPS",
+      "tabLabel": "OPS",
+      "badge": "SVANTHAM / OPS",
       "statusText": "SYNCED",
       "subtitle": "TODAY'S CONTROL ROOM",
       "heading": "Good morning, Anil.",
@@ -286,19 +236,24 @@
   ],
   "deploymentCards": [
     {
-      "code": "01 / BYOI",
-      "title": "Use your own server.",
-      "description": "Your existing machine, local network and rules. Zero cloud dependencies when you want full physical control."
+      "code": "01 / PRICING",
+      "title": "No artificial pricing.",
+      "description": "We charge a flat fee. Add 5 employees or 500 without watching your monthly software bill multiply."
     },
     {
-      "code": "02 / SVANTHAM BOX",
-      "title": "Plug in a ready-to-run appliance.",
-      "description": "A compact, power-efficient local server pre-configured with Svantham Core for your local team."
+      "code": "02 / SCALE",
+      "title": "Scalable at no cost.",
+      "description": "Grow your business naturally. Svantham never imposes limits on users, features, or data volume."
     },
     {
-      "code": "03 / HYBRID SYNC",
-      "title": "Keep a cloud bridge when you choose.",
-      "description": "Remote visibility and cross-branch sync without surrendering your operational foundation to SaaS lock-in."
+      "code": "03 / INFRA",
+      "title": "Choose your infra.",
+      "description": "Host locally on your own server, use a Svantham Box, or deploy securely to your private cloud."
+    },
+    {
+      "code": "04 / CUSTOM",
+      "title": "Customizable with AMC.",
+      "description": "We don't just sell software. With our Annual Maintenance Contract, we'll build tailored workflows just for you."
     }
   ],
   "ticker": [
