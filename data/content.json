@@ -48,7 +48,33 @@
     "calc_users_suffix": "users",
     "calc_years_suffix": "years",
     "calc_save_up_to": "Save up to",
-    "calc_over": "over"
+    "calc_over": "over",
+    "tailored_companyName": "Svantham Tailored",
+    "tailored_contact_headline": "Let's Build Together",
+    "tailored_contact_subheadline": "Tell us about your project and we'll get back to you within 24 hours.",
+    "tailored_footer_copyright": "© 2026 Svantham Software",
+    "tailored_footer_tagline": "Custom software & digital marketing solutions",
+    "tailored_hero_headline": "Customized Software & Content Marketing",
+    "tailored_hero_subheadline": "We build the software. We run the marketing that 𝒂𝒄𝒕𝒖𝒂𝒍𝒍𝒚 sells. Simple as that.",
+    "tailored_logoUrl": "/logo.svg",
+    "tailored_metaDescription": "K2MS builds custom software solutions and delivers digital marketing that scales your business. From CRMs to AI infrastructure — if you can dream it, we can build it.",
+    "tailored_metaOgDescription": "Custom software solutions & digital marketing that scale your business.",
+    "tailored_metaOgTitle": "Svantham Tailored — Custom Software & Digital Marketing",
+    "tailored_metaTitle": "Svantham Tailored",
+    "tailored_marquee_text": "Automate · Get Found · Grow ·",
+    "tailored_ogImageUrl": "/logo.png",
+    "tailored_portfolio_headline": "What we've built",
+    "tailored_portfolio_subheadline": "Projects we're proud of — built with precision, delivered with impact. Pardon the technical jargon ;)",
+    "tailored_service_both_desc": "From product development to demand generation, from seed to fruit, we help you grow what you’ve planted.",
+    "tailored_service_both_title": "Full Stack Growth",
+    "tailored_service_infra_desc": "Domains, DNS, servers, containers, cloud. We’re the expert crew backstage, keeping everything running while you focus on the show.",
+    "tailored_service_infra_title": "Cloud & Infrastructure",
+    "tailored_service_marketing_desc": "We build websites like well-trained salespeople. Designed around your business, with content that answers the questions your customers are already asking.",
+    "tailored_service_marketing_title": "Digital Marketing",
+    "tailored_service_software_desc": "CRMs, ERPs, AI infrastructure, internal tools, integrations. We design and build customized software to fit your workflow and budget, like a key cut for its lock.",
+    "tailored_service_software_title": "Custom Software",
+    "tailored_services_headline": "The Work We Do",
+    "tailored_services_subheadline": "End-to-end digital solutions, without another subscription to pay for."
   },
   "modules": [
     {
@@ -263,5 +289,180 @@
     "FIXED COSTS",
     "NO DATA HOSTAGE",
     "LOCAL LAN SYNC"
+  ],
+  "tailoredPortfolio": [
+    {
+      "category": "software",
+      "client": "UTOC Engineering Pte Ltd",
+      "description": {
+        "challenge": "Needed to digitize civil and mechanical workflows (ISO drawings, spools, welding joints, material listings, and QA/QC image inspections) for 500+ employees.",
+        "solution": "Engineered automated Excel report generation and maintained a robust Django backend deployed via Apache WSGI. Administered the Ubuntu host server and minimized page load latency through comprehensive database indexing.",
+        "impact": "Successfully supported 1000s of records updated in real-time by many employees concurrently across the proprietary UWIS platform."
+      },
+      "id": "project-1784301195824",
+      "images": [
+        "Screenshot_2026-07-17_180749_1784300576.png",
+        "Screenshot_2026-07-17_180438_1784300575.png",
+        "Screenshot_2026-07-17_180728_1784300576.png"
+      ],
+      "logo": "Screenshot_2026-07-17_205905_1784302210.png",
+      "name": "Smart UWIS",
+      "tags": [
+        "ERP",
+        "Dashboard",
+        "Analytics"
+      ],
+      "audioTestimony": ""
+    },
+    {
+      "category": "software",
+      "client": "MusicTutorship",
+      "description": {
+        "challenge": "Founder Vijay needed to automate lead tracking and course management, along with Google Meet scheduling to save time.",
+        "solution": "Built a custom CRM with automated class scheduling via a Google service account. Used Upstash Redis, Resend API, and a Go Fiber server to handle heavy request threading and automated emails.",
+        "impact": "Helped the founder save 10x of his time, allowing him to focus entirely on his true passion: teaching music."
+      },
+      "id": "project-1784303463375",
+      "images": [
+        "Screenshot 2026-07-17 181522.png",
+        "Screenshot 2026-07-17 181213.png",
+        "Screenshot 2026-07-17 181250.png"
+      ],
+      "logo": "logo_1784303414.webp",
+      "name": "MusicTutorship CRM",
+      "tags": [
+        "CRM",
+        "EdTech",
+        "Leads"
+      ]
+    },
+    {
+      "category": "software",
+      "client": "MaxMyBill India",
+      "description": {
+        "challenge": "Needed a billing/sales POS product to help companies simplify billing, manage cash flow, and track payments natively.",
+        "solution": "Developed a Flutter application with Firebase integrations for native notifications and Google sign-in support. Handled Play Store publishing and bundle compatibility.",
+        "impact": "Significantly reduced development time, enabled future App Store expansion, and delivered a scalable multi-platform application."
+      },
+      "id": "project-1784303651525",
+      "images": [
+        "MAXmybill_1786532014301.png",
+        "mmb2_1786532122047.jpg",
+        "mmb_1786532124659.png"
+      ],
+      "logo": "unnamed_2_1784303590.webp",
+      "name": "MaxMyBill",
+      "tags": [
+        "Business",
+        "Sales",
+        "Billing"
+      ]
+    },
+    {
+      "id": "1788196283522",
+      "category": "",
+      "client": "Seyon Enterprises",
+      "description": {
+        "challenge": "As a leading industrial valve supplier, Seyonflo historically relied on static PowerPoint presentations to showcase their complex product lines to clients. This manual approach severely limited their reach, made product updates cumbersome, and lacked the professional digital presence required to compete in the modern B2B manufacturing sector.",
+        "solution": "We designed and developed a modern, high-performance portfolio website tailored specifically for the industrial space. By migrating their catalog from offline slides to a dynamic web platform, we built a responsive, easily navigable site with a heavy emphasis on technical SEO optimization and clean architecture.",
+        "impact": "The transition instantly elevated Seyonflo's professional credibility. The new SEO-optimized platform is now actively driving organic website traffic, generating inbound leads, and providing their sales team with a powerful, always-up-to-date digital catalog to share with global buyers."
+      },
+      "images": [
+        "Screenshot 2026-08-31 225341_1788197062484.png",
+        "Screenshot 2026-08-31 225412_1788197069322.png"
+      ],
+      "logo": "favicon_1788196352518.svg",
+      "name": "SeyonFlo",
+      "tags": [
+        "Portfolio",
+        " Website"
+      ]
+    },
+    {
+      "category": "marketing",
+      "client": "SGS Technologie, Florida, USA",
+      "description": {
+        "challenge": "SGS Technologie needed to attract the right B2B audience in Florida.",
+        "solution": "Engineered targeted, high-quality website content tailored for B2B engagement.",
+        "impact": "Successfully converted web traffic into measurable business leads."
+      },
+      "id": "project-1784345584234",
+      "images": [],
+      "logo": "sgs-icon-logo_1784351671.svg",
+      "name": "Website Content Creation for B2B",
+      "tags": [
+        "SEO",
+        "Content"
+      ]
+    },
+    {
+      "category": "marketing",
+      "client": "Srinsoft Technologies",
+      "description": {
+        "challenge": "Srinsoft Technologies needed to rank higher in modern search engines, including AI Overviews.",
+        "solution": "Wrote a highly optimized technical blog targeting specific engineering keywords and AEO strategies.",
+        "impact": "Blog successfully ranks in Google SERPs and frequently appears in AI Overviews."
+      },
+      "id": "project-1784345847365",
+      "images": [],
+      "logo": "favicon_1784351811.png",
+      "name": "SEO and AI Optimized Technical Blog",
+      "tags": [
+        "SERP",
+        "AEO"
+      ]
+    },
+    {
+      "category": "marketing",
+      "client": "Satori Creatives",
+      "description": {
+        "challenge": "Satori Creatives needed to engage B2C customers and build brand trust.",
+        "solution": "Developed compelling B2C website content focused on customer engagement and trust-building.",
+        "impact": "Drove higher conversions and significantly improved customer trust metrics."
+      },
+      "id": "project-1784346099473",
+      "images": [],
+      "logo": "satori-logo_1786531722720.png",
+      "name": "B2C Website Content",
+      "tags": [
+        "Content",
+        "Trust-Building"
+      ]
+    },
+    {
+      "category": "marketing",
+      "client": "ForeFind",
+      "description": {
+        "challenge": "ForeFind needed a comprehensive buyer's guide to explain franchise investments.",
+        "solution": "Created an SEO/GEO optimized landing page explaining investment ranges, ROI, legal considerations, and decision-making steps.",
+        "impact": "Provided clear, actionable guidance for potential franchise buyers, increasing lead quality."
+      },
+      "id": "project-1784346408663",
+      "images": [],
+      "logo": "1000070181_1784352066.png",
+      "name": "Landing Page - Commercial",
+      "tags": [
+        "SEO",
+        "GEO",
+        "AEO"
+      ]
+    },
+    {
+      "category": "marketing",
+      "client": "Srinsoft Engineering",
+      "description": {
+        "challenge": "Identify and resolve critical business bottlenecks.",
+        "solution": "A thought leadership article about interoperability problems through storytelling, real-world examples, and business impact.",
+        "impact": "Delivered measurable improvements in operational efficiency and market reach."
+      },
+      "id": "project-1784346672900",
+      "images": [],
+      "logo": "favicon_1784351811.png",
+      "name": "Executive-friendly Technical Article for Engineering Services",
+      "tags": [
+        "Article",
+        "SEO"
+      ]
+    }
   ]
 }

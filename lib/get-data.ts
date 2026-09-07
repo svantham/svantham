@@ -57,6 +57,7 @@ export interface SvanthamData {
   dashboardViews: DashboardViewItem[];
   deploymentCards: DeploymentCardItem[];
   ticker: string[];
+  tailoredPortfolio?: any[];
 }
 
 export async function getSvanthamData(): Promise<SvanthamData> {
@@ -79,9 +80,11 @@ export async function getSvanthamData(): Promise<SvanthamData> {
       dashboardViews: Array.isArray(data.dashboardViews) && data.dashboardViews.length > 0 ? data.dashboardViews : fallback.dashboardViews,
       deploymentCards: Array.isArray(data.deploymentCards) && data.deploymentCards.length > 0 ? data.deploymentCards : fallback.deploymentCards,
       ticker: Array.isArray(data.ticker) && data.ticker.length > 0 ? data.ticker : fallback.ticker,
+      tailoredPortfolio: Array.isArray((data as any).tailoredPortfolio) && (data as any).tailoredPortfolio.length > 0 ? (data as any).tailoredPortfolio : (fallback as any).tailoredPortfolio || [],
     };
   } catch (err) {
     console.warn('Failed to read from Upstash Redis, using fallback data/content.json:', err);
     return fallback;
   }
 }
+

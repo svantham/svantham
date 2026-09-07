@@ -9,7 +9,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const { content } = data
 
   return {
-    metadataBase: new URL('https://svantham.com'),
+    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://svantham.com')),
     title: content.seo_title,
     description: content.seo_description,
     openGraph: {
@@ -42,7 +42,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export const viewport: Viewport = {
   colorScheme: 'light',
-  themeColor: '#12140f', // Use the dark background instead
+  themeColor: '#12140f',
   width: 'device-width',
   initialScale: 1,
 }
@@ -50,6 +50,14 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className="bg-background">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Geom:ital,wght@0,300..900;1,300..900&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap"
+        />
+      </head>
       <body className="antialiased">
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
@@ -57,4 +65,3 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     </html>
   )
 }
-

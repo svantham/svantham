@@ -1,11 +1,49 @@
 import React from 'react';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
+import { getSvanthamData } from '@/lib/get-data';
+import ClientLayout from './ClientLayout';
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = await params;
+  const id = resolvedParams.id.toLowerCase();
+  const data = await getSvanthamData();
+  const moduleData = data.modules.find(m => m.id === id) || null;
+  const title = `Svantham ${moduleData?.name || id.toUpperCase()}`;
+  return {
+    title,
+    openGraph: {
+      title,
+      images: [
+        {
+          url: data.content.seo_og_image || '/logo.png',
+          width: 1200,
+          height: 630,
+        }
+      ],
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      images: [data.content.seo_og_image || '/logo.png'],
+    }
+  };
+}
 
 export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
-  const productId = resolvedParams.id.toUpperCase();
+  const id = resolvedParams.id.toLowerCase();
+  const data = await getSvanthamData();
   
+  const moduleData = data.modules.find(m => m.id === id) || null;
+  
+  if (id === 'poss') {
+    return <ClientLayout id={id} content={data.content} moduleData={moduleData} />;
+  }
+
+  // Return the WIP Page for all other products
+  const productId = id.toUpperCase();
   return (
     <div style={{
       minHeight: '100vh',
@@ -37,7 +75,6 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
         alignItems: 'center',
         gap: '24px'
       }}>
-        {/* Construction Crane Animation */}
         <div className="crane-container">
           <div className="crane-tower"></div>
           <div className="crane-arm"></div>

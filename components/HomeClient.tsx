@@ -36,10 +36,10 @@ export default function HomeClient({ initialData }: { initialData: SvanthamData 
   const [contactMessage, setContactMessage] = useState('');
 
 
-  const [calcUsers, setCalcUsers] = useState(3);
-  const [calcYears, setCalcYears] = useState(5);
+  const [calcUsers, setCalcUsers] = useState(20);
+  const [calcYears, setCalcYears] = useState(2);
 
-  const userOptions = [3, ...Array.from({ length: 40 }, (_, i) => (i + 1) * 5)];
+  const userOptions = Array.from({ length: 20 }, (_, i) => (i + 1) * 5);
 
   const formatCurrency = (val: number) => {
     return new Intl.NumberFormat('en-IN', {
@@ -52,17 +52,19 @@ export default function HomeClient({ initialData }: { initialData: SvanthamData 
   // Active items
   const activeDash = dashboardViews[activeDeckIndex] || dashboardViews[0];
 
-  const saasRatePerMonth = 650;
+  const saasRatePerMonth = 800;
   const saasTotal = calcUsers * saasRatePerMonth * 12 * calcYears;
 
   // Svantham pricing: tiered
-  let svanthamTotal = 0;
-  if (calcYears === 1) svanthamTotal = 5000;
-  else if (calcYears === 2) svanthamTotal = 9000;
-  else if (calcYears === 3) svanthamTotal = 13000;
-  else if (calcYears === 4) svanthamTotal = 17000;
-  else if (calcYears === 5) svanthamTotal = 20000;
-  else svanthamTotal = 50000; // 5+ (lifetime)
+  let svanthamBase = 0;
+  if (calcYears === 1) svanthamBase = 25000;
+  else if (calcYears === 2) svanthamBase = 45000;
+  else if (calcYears === 3) svanthamBase = 65000;
+  else if (calcYears === 4) svanthamBase = 80000;
+  else if (calcYears === 5) svanthamBase = 100000;
+
+  const amcTotal = 10000 * calcYears;
+  const svanthamTotal = svanthamBase + amcTotal;
 
   const costDifference = saasTotal - svanthamTotal;
 
@@ -104,7 +106,7 @@ export default function HomeClient({ initialData }: { initialData: SvanthamData 
 
   const handleWhatsAppInquiry = (e: React.FormEvent) => {
     e.preventDefault();
-    const phone = content.contact_whatsapp_number;
+    const phone = content.contact_whatsapp_number || '917845299722';
     const text = encodeURIComponent(
       `Hi Svantham Team,\n\nI'm ${contactName || 'an operator'} from ${contactCompany || 'my company'}.\n\n${contactMessage || "I'd like to schedule a demo of Svantham."}`
     );
@@ -444,7 +446,7 @@ export default function HomeClient({ initialData }: { initialData: SvanthamData 
           <div className="comparison-row highlighted">
             <span style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
               {content.svantham_row_title}
-              <span style={{ opacity: 0.6, fontSize: '11px', letterSpacing: '0', fontWeight: 'normal' }}>*License Cost (without AMC)</span>
+              <span style={{ opacity: 0.6, fontSize: '11px', letterSpacing: '0', fontWeight: 'normal' }}>*Includes AMC</span>
             </span>
             <strong className="price-align">
               {formatCurrency(svanthamTotal)}
@@ -500,7 +502,7 @@ export default function HomeClient({ initialData }: { initialData: SvanthamData 
               <h3>{content.toast_custom_made}</h3>
               <p>SVANTHAM / TAILORED</p>
             </div>
-            <Link href="/tailored" className="tailored-banner-btn">
+            <Link href="/tailored" target="_blank" rel="noopener noreferrer" className="tailored-banner-btn">
               {content.toast_visit_btn} <ArrowUpRightIcon />
             </Link>
           </div>
@@ -532,8 +534,64 @@ export default function HomeClient({ initialData }: { initialData: SvanthamData 
               </div>
             </div>
 
+            {/* Collapsible Contact Form - appears above infra-stack on mobile, spans full width on desktop */}
+            {contactModalOpen && (
+              <div className="order-2 md:order-3 col-span-full w-full pt-4 md:pt-5 border-t border-[#270d14]/10 -mt-4 md:-mt-2">
+                <form onSubmit={handleWhatsAppInquiry} className="flex flex-col md:flex-row gap-4 md:items-end">
+                  <div className="flex-1">
+                    <label className="block text-[10px] font-mono text-[#270d14]/60 uppercase mb-1 font-bold">Your Name</label>
+                    <input
+                      required
+                      type="text"
+                      value={contactName}
+                      onChange={(e) => setContactName(e.target.value)}
+                      placeholder="Anil Kumar"
+                      className="w-full bg-white/30 border border-[#270d14]/10 rounded-xl p-3 text-sm text-[#270d14] placeholder-[#270d14]/40 outline-none focus:border-[#270d14] transition"
+                    />
+                  </div>
+
+                  <div className="flex-1">
+                    <label className="block text-[10px] font-mono text-[#270d14]/60 uppercase mb-1 font-bold">Company</label>
+                    <input
+                      required
+                      type="text"
+                      value={contactCompany}
+                      onChange={(e) => setContactCompany(e.target.value)}
+                      placeholder="XYZ LLP"
+                      className="w-full bg-white/30 border border-[#270d14]/10 rounded-xl p-3 text-sm text-[#270d14] placeholder-[#270d14]/40 outline-none focus:border-[#270d14] transition"
+                    />
+                  </div>
+
+                  <div className="flex-[2]">
+                    <label className="block text-[10px] font-mono text-[#270d14]/60 uppercase mb-1 font-bold">How can we help?</label>
+                    <input
+                      required
+                      type="text"
+                      value={contactMessage}
+                      onChange={(e) => setContactMessage(e.target.value)}
+                      placeholder="I'm interested in the POSS and CRM modules..."
+                      className="w-full bg-white/30 border border-[#270d14]/10 rounded-xl p-3 text-sm text-[#270d14] placeholder-[#270d14]/40 outline-none focus:border-[#270d14] transition"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="inline-flex items-center justify-center gap-2 shrink-0 whitespace-nowrap rounded-xl bg-[#270d14] px-6 py-3.5 text-[11px] font-mono font-bold tracking-widest text-white hover:bg-black transition uppercase"
+                  >
+                    <span>WHATSAPP&nbsp;US</span>
+                    <ArrowRight size={16} className="shrink-0" />
+                  </button>
+                </form>
+                <div className="text-right mt-3">
+                  <span className="text-[10px] font-mono text-[#270d14]/60 font-bold">
+                    (or email us at <a href="mailto:hello.svantham@gmail.com" className="underline hover:text-[#270d14] transition">hello.svantham@gmail.com</a>)
+                  </span>
+                </div>
+              </div>
+            )}
+
             {/* 3D Rotating Stack from HomeClient */}
-            <div className="infra-stack reveal reveal-delay-2">
+            <div className="infra-stack reveal reveal-delay-2 order-3 md:order-2">
               {deploymentCards.map((card, idx) => {
                 const total = deploymentCards.length;
                 const posClass = `pos-${(total * 2 + idx - (infraIndex % total)) % total}`;
@@ -551,64 +609,6 @@ export default function HomeClient({ initialData }: { initialData: SvanthamData 
               })}
             </div>
           </div>
-
-          {/* Collapsible Contact Form */}
-          {contactModalOpen && (
-            <div style={{ marginTop: '40px', paddingTop: '40px', borderTop: '1px solid rgba(39, 13, 20, 0.1)' }}>
-              <form onSubmit={handleWhatsAppInquiry} className="flex flex-col md:flex-row gap-4 md:items-end">
-                <div className="flex-1">
-                  <label className="block text-[10px] font-mono text-[#270d14]/60 uppercase mb-1 font-bold">Your Name</label>
-                  <input
-                    required
-                    type="text"
-                    value={contactName}
-                    onChange={(e) => setContactName(e.target.value)}
-                    placeholder="Anil Kumar"
-                    className="w-full bg-white/30 border border-[#270d14]/10 rounded-xl p-3 text-sm text-[#270d14] placeholder-[#270d14]/40 outline-none focus:border-[#270d14] transition"
-                  />
-                </div>
-
-                <div className="flex-1">
-                  <label className="block text-[10px] font-mono text-[#270d14]/60 uppercase mb-1 font-bold">Company</label>
-                  <input
-                    required
-                    type="text"
-                    value={contactCompany}
-                    onChange={(e) => setContactCompany(e.target.value)}
-                    placeholder="XYZ LLP"
-                    className="w-full bg-white/30 border border-[#270d14]/10 rounded-xl p-3 text-sm text-[#270d14] placeholder-[#270d14]/40 outline-none focus:border-[#270d14] transition"
-                  />
-                </div>
-
-                <div className="flex-[2]">
-                  <label className="block text-[10px] font-mono text-[#270d14]/60 uppercase mb-1 font-bold">How can we help?</label>
-                  <input
-                    required
-                    type="text"
-                    value={contactMessage}
-                    onChange={(e) => setContactMessage(e.target.value)}
-                    placeholder="I'm interested in the POSS and CRM modules..."
-                    className="w-full bg-white/30 border border-[#270d14]/10 rounded-xl p-3 text-sm text-[#270d14] placeholder-[#270d14]/40 outline-none focus:border-[#270d14] transition"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  className="rounded-xl bg-[#270d14] px-6 py-3.5 text-[11px] font-mono font-bold tracking-widest text-white hover:bg-black transition uppercase whitespace-nowrap"
-                >
-                  WHATSAPP ↗
-                </button>
-              </form>
-              <div className="text-right mt-3">
-                <a
-                  href={`mailto:${content.contact_email}?subject=Svantham Inquiry from ${encodeURIComponent(contactName || 'Operator')}`}
-                  className="text-[10px] font-mono text-[#270d14]/50 hover:text-[#270d14] transition underline font-bold"
-                >
-                  Or email us at {content.contact_email}
-                </a>
-              </div>
-            </div>
-          )}
         </div>
       </section>
 
@@ -624,6 +624,10 @@ export default function HomeClient({ initialData }: { initialData: SvanthamData 
     </main>
   );
 }
+
+
+
+
 
 
 
