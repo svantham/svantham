@@ -95,30 +95,15 @@
       "id": "poss",
       "code": "01",
       "name": "POSS",
-      "eyebrow": "Retail Core",
       "description": "Point of sale and sync that keeps every counter moving.",
-      "context": "Multi-branch retail and wholesale billing engineered to run at full speed even when the internet is completely cut.",
-      "features": [
-        "Offline-first checkout with zero counter freeze",
-        "Instant multi-branch stock transfers and reconciliation",
-        "Automated GST, HSN, and landed-cost calculation"
-      ],
       "accent": "chartreuse",
-      "image": "",
-      "tags": []
+      "image": ""
     },
     {
       "id": "crm",
       "code": "02",
       "name": "CRM",
-      "eyebrow": "WhatsApp-native",
       "description": "Turn everyday chats into follow-ups, orders, and retained customers.",
-      "context": "B2B sales in India happen on WhatsApp. Svantham turns conversations into tracked pipelines, quotations, and closed deals.",
-      "features": [
-        "Shared team WhatsApp inbox with unlimited telecaller seats",
-        "Automated quotation dispatch and order status pings",
-        "Call dispositions and customer transaction history"
-      ],
       "accent": "coral",
       "image": ""
     },
@@ -126,14 +111,7 @@
       "id": "hrms",
       "code": "03",
       "name": "HRMS",
-      "eyebrow": "Blue-collar ready",
       "description": "Attendance, payroll, and people ops built for the real workforce.",
-      "context": "Built for factory floors, retail chains, and field crews. No per-employee pricing tiers that punish hiring.",
-      "features": [
-        "Biometric & selfie punch-in ready with geo-tagging",
-        "Daily wage, overtime, and kharcha cash advance ledger",
-        "One-click compliant payroll run via standard bank formats"
-      ],
       "accent": "ink",
       "image": ""
     },
@@ -141,14 +119,7 @@
       "id": "job",
       "code": "04",
       "name": "Job-Work",
-      "eyebrow": "Manufacturing MRP",
       "description": "Trace materials, jobs, and output without spreadsheet archaeology.",
-      "context": "Track raw material dispatch to subcontractors, process loss, and finished goods assembly with full audit visibility.",
-      "features": [
-        "Delivery challans with scrap & wastage tracking",
-        "Multi-stage vendor job work tracking and reconciliations",
-        "Bill of Materials (BOM) costing and yield variance analysis"
-      ],
       "accent": "chartreuse",
       "image": ""
     },
@@ -156,14 +127,7 @@
       "id": "fsm",
       "code": "05",
       "name": "FSM",
-      "eyebrow": "Field dispatch",
       "description": "Send the right person to the right job with less phone-tag.",
-      "context": "Dispatch industrial technicians, maintenance teams, and installers with offline mobile job cards and signatures.",
-      "features": [
-        "Offline Android job cards with customer e-signature",
-        "Service ticket lifecycle and technician location dispatch",
-        "Spares consumption tracking with warranty expiry alerts"
-      ],
       "accent": "coral",
       "image": ""
     },
@@ -171,108 +135,9 @@
       "id": "oms",
       "code": "06",
       "name": "OMS",
-      "eyebrow": "Dealer portal",
       "description": "Give your B2B network a faster way to order and grow.",
-      "context": "A dedicated B2B portal for your distributor and retailer network with tiered trade credit and live warehouse availability.",
-      "features": [
-        "Tiered wholesale pricing and dealer credit limit control",
-        "Real-time warehouse stock visibility for verified dealers",
-        "Zero transaction fee ordering with direct dispatch queuing"
-      ],
       "accent": "ink",
       "image": ""
-    }
-  ],
-  "dashboardViews": [
-    {
-      "id": "poss",
-      "tabLabel": "OPS",
-      "badge": "SVANTHAM / OPS",
-      "statusText": "SYNCED",
-      "subtitle": "TODAY'S CONTROL ROOM",
-      "heading": "Good morning, Anil.",
-      "metric1": {
-        "label": "ORDERS MOVED",
-        "val": "1,284",
-        "sub": "+18.4%"
-      },
-      "metric2": {
-        "label": "FIELD JOBS",
-        "val": "48",
-        "sub": "12 due today"
-      },
-      "chartTitle": "ORDER VELOCITY",
-      "chartSubtitle": "this week",
-      "activity1": {
-        "title": "Ramesh Wholesale synced",
-        "subtitle": "Order #SV-10482 · just now",
-        "type": "check"
-      },
-      "activity2": {
-        "title": "Payroll run completed",
-        "subtitle": "42 employees · 8:42 AM",
-        "type": "zap"
-      }
-    },
-    {
-      "id": "crm",
-      "tabLabel": "CRM",
-      "badge": "SVANTHAM / CRM",
-      "statusText": "8 AGENTS ONLINE",
-      "subtitle": "WHATSAPP DESK",
-      "heading": "342 Active Conversations",
-      "metric1": {
-        "label": "INCOMING LEADS",
-        "val": "186",
-        "sub": "+34 today"
-      },
-      "metric2": {
-        "label": "QUOTES SENT",
-        "val": "₹ 14.8L",
-        "sub": "28 approved"
-      },
-      "chartTitle": "MESSAGE VELOCITY",
-      "chartSubtitle": "avg 2.1m response",
-      "activity1": {
-        "title": "Mahalaxmi Steel quotation approved",
-        "subtitle": "Order value: ₹2,40,000 · 3m ago",
-        "type": "check"
-      },
-      "activity2": {
-        "title": "Broadcast delivered: Festive Pricing",
-        "subtitle": "840 dealers received · 9:15 AM",
-        "type": "zap"
-      }
-    },
-    {
-      "id": "hrms",
-      "tabLabel": "HRMS",
-      "badge": "SVANTHAM / HRMS",
-      "statusText": "BIOMETRIC LIVE",
-      "subtitle": "FLOOR ATTENDANCE",
-      "heading": "Shift A: 148 on floor",
-      "metric1": {
-        "label": "PUNCH RATIO",
-        "val": "98.2%",
-        "sub": "4 pending"
-      },
-      "metric2": {
-        "label": "KHARCHA DISBURSED",
-        "val": "₹ 18,400",
-        "sub": "12 approved"
-      },
-      "chartTitle": "SHIFT ATTENDANCE",
-      "chartSubtitle": "day shift running",
-      "activity1": {
-        "title": "Biometric Gate 2 sync completed",
-        "subtitle": "64 worker logs verified · 8:01 AM",
-        "type": "check"
-      },
-      "activity2": {
-        "title": "Advance salary disbursement via UPI",
-        "subtitle": "₹32,000 cleared · 10:30 AM",
-        "type": "zap"
-      }
     }
   ],
   "deploymentCards": [
@@ -642,48 +507,5 @@
       "comp_sv_points": [],
       "images": []
     }
-  },
-  "poss_features": [
-    {
-      "title": "Offline-First Billing",
-      "desc": "Bill without internet. All data syncs automatically when you reconnect."
-    },
-    {
-      "title": "GST & Tax Reports",
-      "desc": "Auto-generate GST-compliant invoices and end-of-day reports with one click."
-    },
-    {
-      "title": "Inventory Tracking",
-      "desc": "Real-time stock alerts, barcode scanning, and low-stock notifications."
-    },
-    {
-      "title": "Multi-Counter Support",
-      "desc": "Run multiple billing counters from a single dashboard without conflicts."
-    },
-    {
-      "title": "Customer Loyalty",
-      "desc": "Built-in loyalty points, credit tracking, and SMS receipts for repeat customers."
-    },
-    {
-      "title": "Analytics Dashboard",
-      "desc": "Daily sales trends, top products, and peak hour insights at a glance."
-    }
-  ],
-  "poss_comp_cloud_points": [
-    "Requires constant internet",
-    "Monthly subscription fees",
-    "Slow support, no local knowledge",
-    "Generic for all markets",
-    "Data stored on foreign servers"
-  ],
-  "poss_comp_sv_points": [
-    "Works fully offline",
-    "One-time licensing, yours forever",
-    "Dedicated local support team",
-    "Built specifically for Indian GST",
-    "Data stays on your premises"
-  ],
-  "poss_images": [
-    "https://r2.svantham.in/uploads/billie_1788186110540_1788791031655.jpeg"
-  ]
+  }
 }

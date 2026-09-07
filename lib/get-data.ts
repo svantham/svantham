@@ -4,41 +4,9 @@ import fallbackData from '@/data/content.json';
 export interface ModuleItem {
   id: string;
   name: string;
-  eyebrow: string;
   description: string;
   accent: 'chartreuse' | 'coral' | 'ink' | string;
   image?: string;
-}
-
-export interface DashboardViewItem {
-  id: string;
-  tabLabel: string;
-  badge: string;
-  statusText: string;
-  subtitle: string;
-  heading: string;
-  metric1: {
-    label: string;
-    val: string;
-    sub: string;
-  };
-  metric2: {
-    label: string;
-    val: string;
-    sub: string;
-  };
-  chartTitle: string;
-  chartSubtitle: string;
-  activity1: {
-    title: string;
-    subtitle: string;
-    type: string;
-  };
-  activity2: {
-    title: string;
-    subtitle: string;
-    type: string;
-  };
 }
 
 export interface DeploymentCardItem {
@@ -71,7 +39,6 @@ export interface ProductData {
 export interface SvanthamData {
   content: Record<string, string>;
   modules: ModuleItem[];
-  dashboardViews: DashboardViewItem[];
   deploymentCards: DeploymentCardItem[];
   ticker: string[];
   tailoredPortfolio?: any[];
@@ -98,7 +65,6 @@ export async function getSvanthamData(): Promise<SvanthamData> {
       ...mergedData,
       content: { ...fallback.content, ...(data.content || {}) },
       modules: Array.isArray(data.modules) && data.modules.length > 0 ? data.modules : fallback.modules,
-      dashboardViews: Array.isArray(data.dashboardViews) && data.dashboardViews.length > 0 ? data.dashboardViews : fallback.dashboardViews,
       deploymentCards: Array.isArray(data.deploymentCards) && data.deploymentCards.length > 0 ? data.deploymentCards : fallback.deploymentCards,
       ticker: Array.isArray(data.ticker) && data.ticker.length > 0 ? data.ticker : fallback.ticker,
       tailoredPortfolio: Array.isArray(data.tailoredPortfolio) && data.tailoredPortfolio.length > 0 ? data.tailoredPortfolio : fallback.tailoredPortfolio || [],

@@ -18,6 +18,99 @@ import type { SvanthamData } from '@/lib/get-data';
 
 
 
+const STATIC_DASHBOARD_VIEWS = [
+  {
+    id: "poss",
+    tabLabel: "OPS",
+    badge: "SVANTHAM / OPS",
+    statusText: "SYNCED",
+    subtitle: "TODAY'S CONTROL ROOM",
+    heading: "Good morning, Anil.",
+    metric1: {
+      label: "ORDERS MOVED",
+      val: "1,284",
+      sub: "+18.4%"
+    },
+    metric2: {
+      label: "FIELD JOBS",
+      val: "48",
+      sub: "12 due today"
+    },
+    chartTitle: "ORDER VELOCITY",
+    chartSubtitle: "this week",
+    activity1: {
+      title: "Ramesh Wholesale synced",
+      subtitle: "Order #SV-10482 · just now",
+      type: "check"
+    },
+    activity2: {
+      title: "Payroll run completed",
+      subtitle: "42 employees · 8:42 AM",
+      type: "zap"
+    }
+  },
+  {
+    id: "crm",
+    tabLabel: "CRM",
+    badge: "SVANTHAM / CRM",
+    statusText: "8 AGENTS ONLINE",
+    subtitle: "WHATSAPP DESK",
+    heading: "342 Active Conversations",
+    metric1: {
+      label: "INCOMING LEADS",
+      val: "186",
+      sub: "+34 today"
+    },
+    metric2: {
+      label: "QUOTES SENT",
+      val: "₹ 14.8L",
+      sub: "28 approved"
+    },
+    chartTitle: "MESSAGE VELOCITY",
+    chartSubtitle: "avg 2.1m response",
+    activity1: {
+      title: "Mahalaxmi Steel quotation approved",
+      subtitle: "Order value: ₹2,40,000 · 3m ago",
+      type: "check"
+    },
+    activity2: {
+      title: "Broadcast delivered: Festive Pricing",
+      subtitle: "840 dealers received · 9:15 AM",
+      type: "zap"
+    }
+  },
+  {
+    id: "hrms",
+    tabLabel: "HRMS",
+    badge: "SVANTHAM / HRMS",
+    statusText: "BIOMETRIC LIVE",
+    subtitle: "FLOOR ATTENDANCE",
+    heading: "Shift A: 148 on floor",
+    metric1: {
+      label: "PUNCH RATIO",
+      val: "98.2%",
+      sub: "4 pending"
+    },
+    metric2: {
+      label: "KHARCHA DISBURSED",
+      val: "₹ 18,400",
+      sub: "12 approved"
+    },
+    chartTitle: "SHIFT ATTENDANCE",
+    chartSubtitle: "day shift running",
+    activity1: {
+      title: "Biometric Gate 2 sync completed",
+      subtitle: "64 worker logs verified · 8:01 AM",
+      type: "check"
+    },
+    activity2: {
+      title: "Advance salary disbursement via UPI",
+      subtitle: "₹32,000 cleared · 10:30 AM",
+      type: "zap"
+    }
+  }
+];
+
 function ArrowUpRightIcon() {
   return <ArrowRight size={16} className="row-arrow" />;
 }
@@ -25,7 +118,7 @@ function ArrowUpRightIcon() {
 export default function HomeClient({ initialData }: { initialData: SvanthamData }) {
   const router = useRouter();
   const [data] = useState<SvanthamData>(initialData);
-  const { content, modules, dashboardViews, deploymentCards, ticker } = data;
+  const { content, modules, deploymentCards, ticker } = data;
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeDeckIndex, setActiveDeckIndex] = useState(0);
@@ -50,7 +143,7 @@ export default function HomeClient({ initialData }: { initialData: SvanthamData 
   };
 
   // Active items
-  const activeDash = dashboardViews[activeDeckIndex] || dashboardViews[0];
+  const activeDash = STATIC_DASHBOARD_VIEWS[activeDeckIndex] || STATIC_DASHBOARD_VIEWS[0];
 
   const saasRatePerMonth = 800;
   const saasTotal = calcUsers * saasRatePerMonth * 12 * calcYears;
@@ -94,7 +187,7 @@ export default function HomeClient({ initialData }: { initialData: SvanthamData 
 
     // Auto rotate the dashboard deck every 4.5 seconds
     const dashboardInterval = setInterval(() => {
-      setActiveDeckIndex((prev) => (prev + 1) % (dashboardViews.length || 3));
+      setActiveDeckIndex((prev) => (prev + 1) % (STATIC_DASHBOARD_VIEWS.length || 3));
     }, 4500);
 
     return () => {
@@ -102,7 +195,7 @@ export default function HomeClient({ initialData }: { initialData: SvanthamData 
       clearInterval(infraInterval);
       clearInterval(dashboardInterval);
     };
-  }, [deploymentCards.length, dashboardViews.length]);
+  }, [deploymentCards.length]);
 
   const handleWhatsAppInquiry = (e: React.FormEvent) => {
     e.preventDefault();

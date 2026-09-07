@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useMemo } from 'react';
-import type { SvanthamData, ModuleItem, DashboardViewItem, DeploymentCardItem } from '@/lib/get-data';
+import type { SvanthamData, ModuleItem, DeploymentCardItem } from '@/lib/get-data';
 
 export default function AdminPage() {
   const [data, setData] = useState<SvanthamData | null>(null);
@@ -289,7 +289,6 @@ export default function AdminPage() {
       const newModule: ModuleItem = {
         id: `module-${Date.now()}`,
         name: 'New Module',
-        eyebrow: 'Operations',
         description: 'Description of the new module.',
         accent: 'chartreuse',
         image: '',
@@ -391,46 +390,6 @@ export default function AdminPage() {
     } finally {
       setUploadingPortfolioIndex(null);
     }
-  };
-
-  // Dashboard views helpers
-  const updateDashboardView = (index: number, key: string, value: any) => {
-    setData((prev) => {
-      if (!prev) return prev;
-      const updated = [...prev.dashboardViews];
-      updated[index] = { ...updated[index], [key]: value };
-      return { ...prev, dashboardViews: updated };
-    });
-  };
-
-  const updateDashboardMetric = (viewIdx: number, metricKey: 'metric1' | 'metric2', field: 'label' | 'val' | 'sub', value: string) => {
-    setData((prev) => {
-      if (!prev) return prev;
-      const updated = [...prev.dashboardViews];
-      updated[viewIdx] = {
-        ...updated[viewIdx],
-        [metricKey]: {
-          ...updated[viewIdx][metricKey],
-          [field]: value,
-        },
-      };
-      return { ...prev, dashboardViews: updated };
-    });
-  };
-
-  const updateDashboardActivity = (viewIdx: number, actKey: 'activity1' | 'activity2', field: 'title' | 'subtitle', value: string) => {
-    setData((prev) => {
-      if (!prev) return prev;
-      const updated = [...prev.dashboardViews];
-      updated[viewIdx] = {
-        ...updated[viewIdx],
-        [actKey]: {
-          ...updated[viewIdx][actKey],
-          [field]: value,
-        },
-      };
-      return { ...prev, dashboardViews: updated };
-    });
   };
 
   // Deployment cards helpers
@@ -785,15 +744,6 @@ export default function AdminPage() {
                       </div>
                     </div>
 
-                    <div>
-                      <label className="block text-[10px] font-mono text-white/40 uppercase mb-1">Eyebrow / Category</label>
-                      <input
-                        type="text"
-                        value={mod.eyebrow}
-                        onChange={(e) => updateModule(idx, 'eyebrow', e.target.value)}
-                        className="w-full bg-[#171a25] border border-white/10 rounded-lg p-2.5 text-xs outline-none focus:border-[#b8ef3e]"
-                      />
-                    </div>
 
                     <div>
                       <label className="block text-[10px] font-mono text-white/40 uppercase mb-1">Short Description</label>
