@@ -9,7 +9,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const { content } = data
 
   return {
-    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://svantham.com')),
+    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://svantham.in')),
     title: content.seo_title,
     description: content.seo_description,
     openGraph: {
@@ -31,10 +31,8 @@ export async function generateMetadata(): Promise<Metadata> {
       description: content.seo_og_description || content.seo_description,
       images: [content.seo_og_image],
     },
-    icons: {
-      icon: '/icon.svg',
-      shortcut: '/icon.svg',
-      apple: '/icon.svg',
+    alternates: {
+      canonical: './',
     },
     generator: 'Svantham',
   }
@@ -49,7 +47,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className="bg-background">
+    <html lang="en" className="bg-background" data-scroll-behavior="smooth">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

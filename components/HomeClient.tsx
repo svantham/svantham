@@ -119,7 +119,7 @@ export default function HomeClient({ initialData }: { initialData: SvanthamData 
       {/* Navigation */}
       <nav className="site-nav" aria-label="Main navigation">
         <a href="#top" className="wordmark" style={{ display: 'flex', alignItems: 'center' }}>
-          <img src="/logo.svg" alt={content.nav_logo} style={{ height: '48px', width: 'auto' }} />
+          <img src="/logo.svg" alt='SVANTHAM' style={{ height: '48px', width: 'auto' }} />
         </a>
 
         <div className={`nav-links ${menuOpen ? 'open' : ''}`}>

@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 export async function POST(req: Request) {
   try {
@@ -19,46 +18,42 @@ export async function POST(req: Request) {
 
     if (!accountId || !accessKeyId || !secretAccessKey) {
       return NextResponse.json({
-        error: 'Cloudflare R2 credentials not configured. Please set R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, and R2_SECRET_ACCESS_KEY in environment variables.'
+        error: 'Cloudflare R2 credentials not configured.'
       }, { status: 400 });
     }
 
-    const { filename, contentType } = await req.json();
+    // Accept multipart/form-data with the actual file
+    const formData = await req.formData();
+    const file = formData.get('file') as File | null;
 
-    if (!filename) {
-      return NextResponse.json({ error: 'Filename is required' }, { status: 400 });
+    if (!file) {
+      return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
     const s3Client = new S3Client({
       region: 'auto',
       endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
-      credentials: {
-        accessKeyId,
-        secretAccessKey,
-      },
+      credentials: { accessKeyId, secretAccessKey },
     });
 
-    const ext = filename.split('.').pop() || 'png';
-    const cleanBase = filename.replace(/\.[^/.]+$/, '').replace(/[^a-zA-Z0-9-_]/g, '_');
-    const uniqueKey = `uploads/${cleanBase}_${Date.now()}.${ext}`;
+    const ext = file.name.split('.').pop() || 'bin';
+    const cleanBase = file.name.replace(/\.[^/.]+$/, '').replace(/[^a-zA-Z0-9-_]/g, '_');
+    const uniqueKey = `images/${cleanBase}_${Date.now()}.${ext}`;
 
-    const command = new PutObjectCommand({
+    const arrayBuffer = await file.arrayBuffer();
+
+    await s3Client.send(new PutObjectCommand({
       Bucket: bucketName,
       Key: uniqueKey,
-      ContentType: contentType || 'application/octet-stream',
-    });
+      Body: Buffer.from(arrayBuffer),
+      ContentType: file.type || 'application/octet-stream',
+    }));
 
-    const presignedUrl = await getSignedUrl(s3Client, command, { expiresIn: 3600 });
     const publicUrl = `${publicUrlBase.replace(/\/$/, '')}/${uniqueKey}`;
 
-    return NextResponse.json({
-      success: true,
-      presignedUrl,
-      key: uniqueKey,
-      publicUrl,
-    });
+    return NextResponse.json({ success: true, publicUrl, key: uniqueKey });
   } catch (error: any) {
-    console.error('R2 Presigned URL error:', error);
+    console.error('R2 upload error:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

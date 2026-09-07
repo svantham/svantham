@@ -1,53 +1,87 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, ShieldCheck, X } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-export default function ClientLayout({ id, content, moduleData }: { id: string; content: any; moduleData: any }) {
+export default function ClientLayout({ id, content, data, moduleData }: { id: string; content: any; data?: any; moduleData: any }) {
   const accentKey = moduleData?.accent || 'chartreuse';
   let accentColor = '#b8ef3e';
   if (accentKey === 'coral') accentColor = '#ff6b6b';
   else if (accentKey === 'ink') accentColor = '#4a90e2';
 
-  const getVal = (key: string, fallback: string) => content[`${id}_${key}`] || fallback;
+  const productData = data?.products?.[id] || {};
+  const getVal = (key: string) => productData[key] || '';
+  const getArr = (key: string) => {
+    if (Array.isArray(productData[key])) return productData[key];
+    return [];
+  };
 
-  const eyebrow = getVal('hero_eyebrow', moduleData?.eyebrow || 'PRODUCT');
-  const title1 = getVal('hero_title_1', moduleData?.name || id.toUpperCase());
-  const title2 = getVal('hero_title_2', '');
-  const titleHighlight = getVal('hero_title_highlight', '');
-  const desc = getVal('hero_desc', moduleData?.context || '');
+  const eyebrow = getVal('hero_eyebrow');
+  const title1 = getVal('hero_title_1');
+  const title2 = getVal('hero_title_2');
+  const titleHighlight = getVal('hero_title_highlight');
+  const desc = getVal('hero_desc');
 
-  const feat1_title = getVal('feat1_title', moduleData?.features?.[0] || 'Feature 1');
-  const feat1_desc = getVal('feat1_desc', 'High performance capability.');
-  const feat2_title = getVal('feat2_title', moduleData?.features?.[1] || 'Feature 2');
-  const feat2_desc = getVal('feat2_desc', 'Seamless integration.');
-  const feat3_title = getVal('feat3_title', moduleData?.features?.[2] || 'Feature 3');
-  const feat3_desc = getVal('feat3_desc', 'Zero compromises.');
+  const features = getArr('features') as Array<{title: string, desc: string}>;
+  const comp_title = getVal('comp_title');
+  const comp_cloud_title = getVal('comp_cloud_title');
+  const comp_sv_title = getVal('comp_sv_title');
+  const comp_cloud_points = getArr('comp_cloud_points') as string[];
+  const comp_sv_points = getArr('comp_sv_points') as string[];
 
-  const comp_title = getVal('comp_title', 'Why We Crush The Competition.');
-  const comp_cloud_title = getVal('comp_cloud_title', 'Typical SaaS');
-  const comp_sv_title = getVal('comp_sv_title', `Svantham ${moduleData?.name || 'Product'}`);
-  
-  const comp_cloud_points = content[`${id}_comp_cloud_points`] || [
-    'Internet down? Sales stop.',
-    'Heavy monthly recurring costs.',
-    'Data hosted on foreign servers.'
-  ];
-  const comp_sv_points = content[`${id}_comp_sv_points`] || [
-    '100% offline-capable checkout.',
-    'Zero artificial user limits.',
-    'Data stays firmly in your control.'
-  ];
+  const pricing_tag = getVal('pricing_tag');
+  const pricing_title = getVal('pricing_title');
+  const pricing_desc = getVal('pricing_desc');
+  const pricing_price = getVal('pricing_price');
+  const pricing_period = getVal('pricing_period');
+  const pricing_btn = getVal('pricing_btn');
 
-  const pricing_tag = getVal('pricing_tag', 'NO HIDDEN FEES');
-  const pricing_title = getVal('pricing_title', 'Simple, Predictable Pricing');
-  const pricing_desc = getVal('pricing_desc', "We don't punish your success. Pay a flat yearly rate.");
-  const pricing_price = getVal('pricing_price', '₹3,000');
-  const pricing_period = getVal('pricing_period', '/ year');
-  const pricing_btn = getVal('pricing_btn', 'Book a Demo');
+  const images = getArr('images') as string[];
+
+  const [imageDims, setImageDims] = useState<Record<number, { width: number; height: number; ratio: number }>>({});
+  const [activeModalImage, setActiveModalImage] = useState<string | null>(null);
+
+  // Helper to resolve images if they're not full URLs
+  const resolveImageUrl = (url: string) => {
+    if (!url) return '';
+    if (url.startsWith('http') || url.startsWith('/')) return url;
+    const baseUrl = process.env.NEXT_PUBLIC_R2_PUBLIC_URL || 'https://r2.svantham.in';
+    return `${baseUrl}/images/${url}`;
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setActiveModalImage(null);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  useEffect(() => {
+    if (!images || images.length === 0) return;
+    images.forEach((url, idx) => {
+      const src = resolveImageUrl(url);
+      if (!src) return;
+      const img = new window.Image();
+      img.src = src;
+      img.onload = () => {
+        setImageDims((prev) => {
+          if (prev[idx]?.width === img.naturalWidth && prev[idx]?.height === img.naturalHeight) return prev;
+          return {
+            ...prev,
+            [idx]: {
+              width: img.naturalWidth,
+              height: img.naturalHeight,
+              ratio: img.naturalWidth / img.naturalHeight,
+            },
+          };
+        });
+      };
+    });
+  }, [images]);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -59,23 +93,20 @@ export default function ClientLayout({ id, content, moduleData }: { id: string; 
 
     gsap.fromTo(".pos-hero-desc",
       { y: 30, opacity: 0 },
-      { y: 0, opacity: 1, duration: 1, delay: 0.3, ease: "power3.out" }
+      { y: 0, opacity: 1, duration: 1, delay: 0.2, ease: "power3.out" }
     );
 
-    gsap.utils.toArray('.reveal-card').forEach((card: any, i) => {
+    const cards = gsap.utils.toArray('.reveal-card');
+    cards.forEach((card: any, i) => {
       gsap.fromTo(card,
-        { opacity: 0, y: 50, scale: 0.95 },
+        { y: 50, opacity: 0 },
         {
           scrollTrigger: {
             trigger: card,
-            start: "top 85%",
+            start: "top bottom-=100",
+            toggleActions: "play none none reverse"
           },
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.8,
-          ease: "power3.out",
-          delay: i * 0.1
+          y: 0, opacity: 1, duration: 0.8, delay: i * 0.1, ease: "power3.out"
         }
       );
     });
@@ -111,32 +142,136 @@ export default function ClientLayout({ id, content, moduleData }: { id: string; 
       <section style={{ padding: '80px 24px', maxWidth: '1200px', margin: '0 auto' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
           
-          <div className="reveal-card" style={{ background: '#12140f', padding: '40px', borderRadius: '2px', border: '1px solid rgba(255,255,255,0.05)', position: 'relative' }}>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '48px', fontWeight: 'bold', color: 'rgba(255,255,255,0.05)', position: 'absolute', top: '24px', right: '24px', lineHeight: '1' }}>01</div>
-            <h3 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '16px', marginTop: '24px' }}>{feat1_title}</h3>
-            <p style={{ color: 'rgba(255,255,255,0.6)', lineHeight: '1.6' }}>{feat1_desc}</p>
-          </div>
-
-          <div className="reveal-card" style={{ background: '#12140f', padding: '40px', borderRadius: '2px', border: '1px solid rgba(255,255,255,0.05)', position: 'relative' }}>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '48px', fontWeight: 'bold', color: 'rgba(255,255,255,0.05)', position: 'absolute', top: '24px', right: '24px', lineHeight: '1' }}>02</div>
-            <h3 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '16px', marginTop: '24px' }}>{feat2_title}</h3>
-            <p style={{ color: 'rgba(255,255,255,0.6)', lineHeight: '1.6' }}>{feat2_desc}</p>
-          </div>
-
-          <div className="reveal-card" style={{ background: '#12140f', padding: '40px', borderRadius: '2px', border: '1px solid rgba(255,255,255,0.05)', position: 'relative' }}>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '48px', fontWeight: 'bold', color: 'rgba(255,255,255,0.05)', position: 'absolute', top: '24px', right: '24px', lineHeight: '1' }}>03</div>
-            <h3 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '16px', marginTop: '24px' }}>{feat3_title}</h3>
-            <p style={{ color: 'rgba(255,255,255,0.6)', lineHeight: '1.6' }}>{feat3_desc}</p>
-          </div>
+          {features.map((feat, idx) => (
+            <div key={idx} className="reveal-card" style={{ background: '#12140f', padding: '40px', borderRadius: '2px', border: '1px solid rgba(255,255,255,0.05)', position: 'relative' }}>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '48px', fontWeight: 'bold', color: `${accentColor}33`, position: 'absolute', top: '24px', right: '24px', lineHeight: '1' }}>0{idx + 1}</div>
+              <h3 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '16px', marginTop: '24px' }}>{feat.title}</h3>
+              <p style={{ color: 'rgba(255,255,255,0.6)', lineHeight: '1.6' }}>{feat.desc}</p>
+            </div>
+          ))}
 
         </div>
       </section>
 
-      <section style={{ padding: '80px 24px', maxWidth: '1200px', margin: '0 auto' }}>
-        <div className="reveal-card" style={{ width: '100%', aspectRatio: '16/9', background: '#0a0b08', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.1)', overflow: 'hidden', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <span style={{ fontFamily: 'var(--font-mono)', color: 'rgba(255,255,255,0.3)', letterSpacing: '0.1em' }}>[ PRODUCT VIDEO / UI DEMO PLACEHOLDER ]</span>
-        </div>
-      </section>
+      {images && images.length > 0 ? (
+        <section style={{ padding: '60px 24px', maxWidth: '1200px', margin: '0 auto' }}>
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '28px',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            {images.map((img, idx) => {
+              // Dynamically calculate the optimal card size based on the image's own dimensions.
+              const dim = imageDims[idx];
+              const ratio = dim?.ratio || (idx % 2 === 0 ? 1.78 : 1.28);
+              const BASE_HEIGHT = 340;
+
+              let targetWidth: number;
+              let targetHeight: number = BASE_HEIGHT;
+
+              if (ratio >= 1.6) {
+                // Wide / panoramic UI (16:9, 16:10, 21:9) -> wide landscape card (~580-620px)
+                targetWidth = Math.min(620, Math.round(BASE_HEIGHT * ratio));
+                targetHeight = Math.round(targetWidth / ratio);
+              } else if (ratio >= 1.15) {
+                // Standard 4:3 / 3:2 screen -> compact card (~420-460px)
+                targetWidth = Math.min(460, Math.round(BASE_HEIGHT * ratio));
+                targetHeight = Math.round(targetWidth / ratio);
+              } else {
+                // Portrait / mobile app view -> narrow card (~200-280px)
+                targetHeight = Math.min(380, Math.max(300, Math.round(260 / ratio)));
+                targetWidth = Math.min(300, Math.round(targetHeight * ratio));
+              }
+
+              return (
+                <div
+                  key={idx}
+                  className="reveal-card group"
+                  onClick={() => setActiveModalImage(resolveImageUrl(img))}
+                  style={{
+                    width: `min(100%, ${targetWidth}px)`,
+                    background: '#12140f',
+                    borderRadius: '12px',
+                    border: '1px solid rgba(255,255,255,0.08)',
+                    overflow: 'hidden',
+                    cursor: 'zoom-in',
+                    position: 'relative',
+                    boxShadow: '0 16px 36px -8px rgba(0,0,0,0.6)',
+                    transition: 'border-color 0.25s ease, transform 0.25s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = `${accentColor}55`;
+                    e.currentTarget.style.transform = 'translateY(-3px)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)';
+                    e.currentTarget.style.transform = 'translateY(0)';
+                  }}
+                >
+                  <img
+                    src={resolveImageUrl(img)}
+                    alt={`Screenshot ${idx + 1}`}
+                    loading="lazy"
+                    onLoad={(e) => {
+                      const { naturalWidth, naturalHeight } = e.currentTarget;
+                      if (naturalWidth && naturalHeight) {
+                        setImageDims((prev) => {
+                          if (prev[idx]?.width === naturalWidth && prev[idx]?.height === naturalHeight) return prev;
+                          return {
+                            ...prev,
+                            [idx]: {
+                              width: naturalWidth,
+                              height: naturalHeight,
+                              ratio: naturalWidth / naturalHeight,
+                            },
+                          };
+                        });
+                      }
+                    }}
+                    style={{
+                      width: '100%',
+                      height: 'auto',
+                      maxHeight: `${targetHeight}px`,
+                      display: 'block',
+                      objectFit: 'contain',
+                    }}
+                  />
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: '12px',
+                      right: '12px',
+                      padding: '4px 8px',
+                      borderRadius: '4px',
+                      background: 'rgba(0, 0, 0, 0.7)',
+                      backdropFilter: 'blur(8px)',
+                      border: '1px solid rgba(255, 255, 255, 0.12)',
+                      color: 'rgba(255, 255, 255, 0.8)',
+                      fontSize: '10px',
+                      fontFamily: 'var(--font-mono)',
+                      letterSpacing: '0.08em',
+                      pointerEvents: 'none',
+                    }}
+                    className="opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    EXPAND ↗
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      ) : (
+        <section style={{ padding: '80px 24px', maxWidth: '1200px', margin: '0 auto' }}>
+          <div className="reveal-card" style={{ width: '100%', aspectRatio: '16/9', background: '#0a0b08', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.1)', overflow: 'hidden', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <span style={{ fontFamily: 'var(--font-mono)', color: 'rgba(255,255,255,0.3)', letterSpacing: '0.1em' }}>[ PRODUCT VIDEO / UI DEMO PLACEHOLDER ]</span>
+          </div>
+        </section>
+      )}
 
       <section className="vs-comp-section" style={{ padding: '120px 24px', marginTop: '40px', background: '#0a0b08', borderTop: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
         <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
@@ -196,6 +331,73 @@ export default function ClientLayout({ id, content, moduleData }: { id: string; 
           </button>
         </div>
       </section>
+
+      {/* Expandable Image Modal / Lightbox */}
+      {activeModalImage && (
+        <div
+          onClick={() => setActiveModalImage(null)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 100,
+            backgroundColor: 'rgba(0,0,0,0.92)',
+            backdropFilter: 'blur(10px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '24px',
+            cursor: 'zoom-out',
+          }}
+        >
+          <div
+            style={{
+              position: 'relative',
+              maxWidth: '96vw',
+              maxHeight: '92vh',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setActiveModalImage(null)}
+              style={{
+                position: 'absolute',
+                top: '-44px',
+                right: '0',
+                background: 'rgba(255,255,255,0.1)',
+                border: '1px solid rgba(255,255,255,0.2)',
+                color: '#fff',
+                borderRadius: '100px',
+                padding: '6px 14px',
+                fontSize: '12px',
+                fontFamily: 'var(--font-mono)',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+              }}
+            >
+              <X size={14} /> CLOSE (ESC)
+            </button>
+            <img
+              src={activeModalImage}
+              alt="Enlarged view"
+              style={{
+                maxWidth: '96vw',
+                maxHeight: '88vh',
+                width: 'auto',
+                height: 'auto',
+                borderRadius: '8px',
+                border: '1px solid rgba(255,255,255,0.15)',
+                boxShadow: '0 30px 60px rgba(0,0,0,0.8)',
+                objectFit: 'contain',
+              }}
+            />
+          </div>
+        </div>
+      )}
 
     </main>
   );

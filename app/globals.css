@@ -97,6 +97,15 @@
   background: #55574c;
 }
 
+/* Scrollbar Hide Utility */
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
 /* Background Field */
 .svantham-page {
   overflow: hidden;
@@ -1605,6 +1614,20 @@
 
   .infra-stack {
     min-height: 360px;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .site-footer {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .tailored-banner {
+    flex-direction: column;
+    text-align: center;
   }
 }
 

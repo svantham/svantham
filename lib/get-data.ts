@@ -3,13 +3,9 @@ import fallbackData from '@/data/content.json';
 
 export interface ModuleItem {
   id: string;
-  code: string;
   name: string;
   eyebrow: string;
   description: string;
-  context: string;
-  features: string[];
-  tags: string[];
   accent: 'chartreuse' | 'coral' | 'ink' | string;
   image?: string;
 }
@@ -51,6 +47,27 @@ export interface DeploymentCardItem {
   description: string;
 }
 
+export interface ProductData {
+  hero_eyebrow: string;
+  hero_title_1: string;
+  hero_title_2: string;
+  hero_title_highlight: string;
+  hero_desc: string;
+  comp_title: string;
+  comp_cloud_title: string;
+  comp_sv_title: string;
+  pricing_tag: string;
+  pricing_title: string;
+  pricing_desc: string;
+  pricing_price: string;
+  pricing_period: string;
+  pricing_btn: string;
+  features: Array<{ title: string; desc: string }>;
+  comp_cloud_points: string[];
+  comp_sv_points: string[];
+  images: string[];
+}
+
 export interface SvanthamData {
   content: Record<string, string>;
   modules: ModuleItem[];
@@ -58,6 +75,8 @@ export interface SvanthamData {
   deploymentCards: DeploymentCardItem[];
   ticker: string[];
   tailoredPortfolio?: any[];
+  products: Record<string, ProductData>;
+  [key: string]: any;
 }
 
 export async function getSvanthamData(): Promise<SvanthamData> {
@@ -73,14 +92,17 @@ export async function getSvanthamData(): Promise<SvanthamData> {
     }
 
     const data = typeof raw === 'string' ? JSON.parse(raw) : raw;
+    const mergedData = { ...fallback, ...data };
 
     return {
+      ...mergedData,
       content: { ...fallback.content, ...(data.content || {}) },
       modules: Array.isArray(data.modules) && data.modules.length > 0 ? data.modules : fallback.modules,
       dashboardViews: Array.isArray(data.dashboardViews) && data.dashboardViews.length > 0 ? data.dashboardViews : fallback.dashboardViews,
       deploymentCards: Array.isArray(data.deploymentCards) && data.deploymentCards.length > 0 ? data.deploymentCards : fallback.deploymentCards,
       ticker: Array.isArray(data.ticker) && data.ticker.length > 0 ? data.ticker : fallback.ticker,
-      tailoredPortfolio: Array.isArray((data as any).tailoredPortfolio) && (data as any).tailoredPortfolio.length > 0 ? (data as any).tailoredPortfolio : (fallback as any).tailoredPortfolio || [],
+      tailoredPortfolio: Array.isArray(data.tailoredPortfolio) && data.tailoredPortfolio.length > 0 ? data.tailoredPortfolio : fallback.tailoredPortfolio || [],
+      products: { ...(fallback.products || {}), ...(data.products || {}) },
     };
   } catch (err) {
     console.warn('Failed to read from Upstash Redis, using fallback data/content.json:', err);
