@@ -12,7 +12,7 @@ export async function generateMetadata() {
       description: data.content.tailored_metaOgDescription || data.content.tailored_metaDescription || "",
       images: [
         {
-          url: data.content.tailored_ogImageUrl || "https://r2.k2ms.in/logos/logo.webp",
+          url: data.content.tailored_ogImageUrl || "https://r2.svantham.in/logos/logo.webp",
           width: 1200,
           height: 630,
         }
@@ -23,7 +23,7 @@ export async function generateMetadata() {
       card: 'summary_large_image',
       title: data.content.tailored_metaOgTitle || data.content.tailored_metaTitle || "Svantham Tailored",
       description: data.content.tailored_metaOgDescription || data.content.tailored_metaDescription || "",
-      images: [data.content.tailored_ogImageUrl || "https://r2.k2ms.in/logos/logo.webp"],
+      images: [data.content.tailored_ogImageUrl || "https://r2.svantham.in/logos/logo.webp"],
     }
   };
 }

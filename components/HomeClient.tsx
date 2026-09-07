@@ -582,11 +582,13 @@ export default function HomeClient({ initialData }: { initialData: SvanthamData 
                     <ArrowRight size={16} className="shrink-0" />
                   </button>
                 </form>
-                <div className="text-right mt-3">
-                  <span className="text-[10px] font-mono text-[#270d14]/60 font-bold">
-                    (or email us at <a href="mailto:hello.svantham@gmail.com" className="underline hover:text-[#270d14] transition">hello.svantham@gmail.com</a>)
-                  </span>
-                </div>
+                {content.contact_email && (
+                  <div className="text-right mt-3">
+                    <span className="text-[10px] font-mono text-[#270d14]/60 font-bold">
+                      (or email us at <a href={`mailto:${content.contact_email}`} className="underline hover:text-[#270d14] transition">{content.contact_email}</a>)
+                    </span>
+                  </div>
+                )}
               </div>
             )}
 

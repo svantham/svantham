@@ -55,7 +55,7 @@ function ProjectCarousel({ images, name }: { images: string[]; name: string }) {
           {images.map((img, i) => (
             <img
               key={img}
-              src={`${'https://r2.k2ms.in'}/images/${img}`}
+              src={`${'https://r2.svantham.in'}/images/${img}`}
               alt={`${name} ${i + 1}`}
               className={`absolute inset-0 h-full w-full object-contain p-4 transition-opacity duration-300 ${i === currentIndex ? 'opacity-100 z-10 animate-[fadeIn_0.3s_ease-out]' : 'opacity-0 z-0'}`}
             />
@@ -107,7 +107,7 @@ function ProjectCarousel({ images, name }: { images: string[]; name: string }) {
           {images.map((img, i) => (
             <img
               key={`lightbox-${img}`}
-              src={`${'https://r2.k2ms.in'}/images/${img}`}
+              src={`${'https://r2.svantham.in'}/images/${img}`}
               alt={`${name} ${i + 1}`}
               className={`absolute max-h-[85vh] w-full object-contain shadow-2xl drop-shadow-2xl transition-opacity duration-300 ${i === currentIndex ? 'opacity-100 z-10 animate-[fadeIn_0.3s_ease-out]' : 'opacity-0 z-0'}`}
               onClick={(e) => e.stopPropagation()}
@@ -303,7 +303,7 @@ export default function TailoredClient({ data }: { data: any }) {
     <main className="tailored-page min-h-screen overflow-x-hidden bg-[#0c0e16] text-[#f8f7f1] selection:bg-[#d7ff55] selection:text-[#0c0e16]">
       <header className="absolute inset-x-0 top-0 z-20 mx-auto flex max-w-[1440px] items-center justify-between px-5 py-5 sm:px-8 lg:px-12">
         <a href="#top" className="brand-lockup text-base font-extrabold tracking-[-0.05em]" aria-label="Svantham Tailored home">
-          <span className="brand-k2m">Svantham</span><span className="brand-services"> Tailored</span>
+          <span className="brand-sv">Svantham</span><span className="brand-services"> Tailored</span>
         </a>
         <a href="#contact" className="rounded-full border border-white/20 px-4 py-2 text-xs font-bold tracking-[0.12em] text-white transition hover:border-[#d7ff55] hover:bg-[#d7ff55] hover:text-[#0c0e16]">LET'S TALK</a>
       </header>
@@ -393,7 +393,7 @@ export default function TailoredClient({ data }: { data: any }) {
               </div>
               <div className="grid gap-5 pt-6 pb-5 sm:pt-7 sm:pb-6 sm:grid-cols-[1fr_auto] sm:items-end"><div><div className="mb-3 flex items-center gap-2 text-xs font-bold tracking-[.14em] text-[#121612]/60 lg:text-[#d7ff55]">
                 {projects[activeProject].logo ? (
-                  <img src={`${'https://r2.k2ms.in'}/images/${projects[activeProject].logo}`} fetchPriority="high" loading="eager" alt={`${projects[activeProject].client} logo`} className="h-7 w-7 rounded-full object-contain bg-black/10 lg:bg-white/10 p-1" />
+                  <img src={`${'https://r2.svantham.in'}/images/${projects[activeProject].logo}`} fetchPriority="high" loading="eager" alt={`${projects[activeProject].client} logo`} className="h-7 w-7 rounded-full object-contain bg-black/10 lg:bg-white/10 p-1" />
                 ) : (
                   <span className="grid h-7 w-7 place-items-center rounded-full bg-black/10 lg:bg-white/10 text-[9px] text-[#121612] lg:text-white">{projects[activeProject].client.slice(0, 2).toUpperCase()}</span>
                 )}
@@ -402,7 +402,7 @@ export default function TailoredClient({ data }: { data: any }) {
             {projects[activeProject] && <aside className="flex flex-col justify-between gap-4 p-5 sm:p-7 bg-[#d7ff55] text-[#121612] lg:rounded-[2rem] lg:p-8"><div><div className="flex items-center justify-between"><span className="hidden lg:inline-block font-mono text-xs opacity-60 lg:opacity-100">{String(activeProject + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}</span><div className="hidden sm:flex items-center gap-2"><button onClick={() => setActiveProject((activeProject === 0 ? projects.length - 1 : activeProject - 1))} className="group inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#121612]/20 transition hover:border-[#121612] hover:text-[#121612]" aria-label="Previous Project"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition-transform group-hover:-translate-x-1"><path d="M15 18l-6-6 6-6" /></svg></button><button onClick={() => setActiveProject((activeProject + 1) % projects.length)} className="group inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#121612]/20 transition hover:border-[#121612] hover:text-[#121612]" aria-label="Next Project"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition-transform group-hover:translate-x-1"><path d="M9 18l6-6-6-6" /></svg></button></div></div><div className="mt-0 sm:mt-8 lg:mt-12 space-y-6 max-w-sm">{typeof projects[activeProject].description === 'object' ? (<><div><h4 className="text-[10px] font-bold text-[#121612]/60 uppercase tracking-widest mb-1.5">The Challenge</h4><p className="whitespace-pre-line text-lg leading-snug tracking-[-.02em]">{projects[activeProject].description.challenge}</p></div><div><h4 className="text-[10px] font-bold text-[#121612]/60 uppercase tracking-widest mb-1.5">Our Solution</h4><p className="whitespace-pre-line text-lg leading-snug tracking-[-.02em]">{projects[activeProject].description.solution}</p></div><div><h4 className="text-[10px] font-bold text-[#121612]/60 uppercase tracking-widest mb-1.5">The Impact</h4><p className="whitespace-pre-line text-lg leading-snug tracking-[-.02em]">{projects[activeProject].description.impact}</p></div></>) : (<p className="whitespace-pre-line text-xl leading-snug tracking-[-.03em]">{projects[activeProject].description}</p>)}</div></div><div>
 
               {projects[activeProject].audioTestimony && (
-                <AudioPlayer src={`${'https://r2.k2ms.in'}/images/${projects[activeProject].audioTestimony}`} />
+                <AudioPlayer src={`${'https://r2.svantham.in'}/images/${projects[activeProject].audioTestimony}`} />
               )}
 
               <div className="flex gap-2">{projects.map((project, index) => <button key={project.id} data-cms-id={project.id} onClick={() => setActiveProject(index)} aria-label={`View ${project.client} case study`} className={`h-2 flex-1 rounded-full transition ${activeProject === index ? "bg-[#121612]" : "bg-[#121612]/20 hover:bg-[#121612]/50"}`} />)}</div><div className="mt-6 sm:hidden"><p className="text-xs font-bold tracking-[.12em]">SWIPE THROUGH OUR IMPACT →</p></div></div></aside>}
@@ -410,7 +410,7 @@ export default function TailoredClient({ data }: { data: any }) {
 
           <div className="hidden" aria-hidden="true">
             {projects.map(p => p.images && p.images[0] && (
-              <img key={`preload-${p.id}`} src={`${'https://r2.k2ms.in'}/images/${p.images[0]}`} alt="" />
+              <img key={`preload-${p.id}`} src={`${'https://r2.svantham.in'}/images/${p.images[0]}`} alt="" />
             ))}
           </div>
         </div>
@@ -433,7 +433,11 @@ export default function TailoredClient({ data }: { data: any }) {
             <div className="mt-8 flex flex-wrap items-center justify-between gap-4">
               <div>
                 <p className="text-xs text-white/45">We'll reply on WhatsApp within 1 business day.</p>
-                <p className="mt-1 text-xs text-white/45">(or email us at <a href="mailto:hello.svantham@gmail.com" className="underline hover:text-white transition">hello.svantham@gmail.com</a>)</p>
+                {content.contact_email && (
+                  <p className="mt-1 text-xs text-white/45">
+                    (or email us at <a href={`mailto:${content.contact_email}`} className="underline hover:text-white transition">{content.contact_email}</a>)
+                  </p>
+                )}
               </div>
               <button className="group rounded-full bg-[#d7ff55] px-5 py-3 text-xs font-black tracking-[.12em] text-[#10121a] transition hover:bg-white">{sent ? "MESSAGE RECEIVED ✓" : <span className="flex items-center gap-3">WHATSAPP US <Arrow diagonal /></span>}</button>
             </div>
