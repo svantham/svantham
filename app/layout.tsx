@@ -4,6 +4,8 @@ import './globals.css'
 
 import { getSvanthamData } from '@/lib/get-data'
 
+export const dynamic = 'force-dynamic';
+
 export async function generateMetadata(): Promise<Metadata> {
   const data = await getSvanthamData()
   const { content } = data

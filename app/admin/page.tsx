@@ -110,16 +110,16 @@ export default function AdminPage() {
     setData((prev) => {
       if (!prev) return prev;
       const isProduct = activePage !== 'home' && activePage !== 'tailored';
-      const arr = isProduct 
+      const arr = isProduct
         ? [...(prev.products?.[activePage]?.[arrayKey] || [])]
         : [...(prev[arrayKey] || [])];
-        
+
       if (field) {
         arr[index] = { ...arr[index], [field]: value };
       } else {
         arr[index] = value; // string arrays
       }
-      
+
       if (isProduct) {
         const products = { ...prev.products };
         products[activePage] = { ...(products[activePage] || {}), [arrayKey]: arr };
@@ -134,7 +134,7 @@ export default function AdminPage() {
     setData((prev) => {
       if (!prev) return prev;
       const isProduct = activePage !== 'home' && activePage !== 'tailored';
-      const arr = isProduct 
+      const arr = isProduct
         ? [...(prev.products?.[activePage]?.[arrayKey] || [])]
         : [...(prev[arrayKey] || [])];
 
@@ -143,7 +143,7 @@ export default function AdminPage() {
       } else {
         arr.push('New Point');
       }
-      
+
       if (isProduct) {
         const products = { ...prev.products };
         products[activePage] = { ...(products[activePage] || {}), [arrayKey]: arr };
@@ -194,12 +194,12 @@ export default function AdminPage() {
     setData((prev) => {
       if (!prev) return prev;
       const isProduct = activePage !== 'home' && activePage !== 'tailored';
-      const arr = isProduct 
+      const arr = isProduct
         ? [...(prev.products?.[activePage]?.[arrayKey] || [])]
         : [...(prev[arrayKey] || [])];
-        
+
       arr.splice(index, 1);
-      
+
       if (isProduct) {
         const products = { ...prev.products };
         products[activePage] = { ...(products[activePage] || {}), [arrayKey]: arr };
@@ -214,15 +214,15 @@ export default function AdminPage() {
     setData((prev) => {
       if (!prev) return prev;
       const isProduct = activePage !== 'home' && activePage !== 'tailored';
-      const arr = isProduct 
+      const arr = isProduct
         ? [...(prev.products?.[activePage]?.[arrayKey] || [])]
         : [...(prev[arrayKey] || [])];
-        
+
       const target = index + direction;
       if (target < 0 || target >= arr.length) return prev;
-      
+
       [arr[index], arr[target]] = [arr[target], arr[index]];
-      
+
       if (isProduct) {
         const products = { ...prev.products };
         products[activePage] = { ...(products[activePage] || {}), [arrayKey]: arr };
@@ -242,7 +242,7 @@ export default function AdminPage() {
     if (activePage === 'home' || activePage === 'tailored') {
       sourceData = data.content || {};
       const allContentKeys = Object.keys(sourceData);
-      
+
       if (activePage === 'home') {
         const namespaces = ['tailored_', ...data.modules.map((m) => `${m.id}_`)];
         keys = allContentKeys.filter((k) => !namespaces.some((ns) => k.startsWith(ns)));
@@ -270,7 +270,7 @@ export default function AdminPage() {
       });
     }
 
-    return keys;
+    return [];
   }, [data, search, activePage]);
 
   // Modules helpers
@@ -554,7 +554,7 @@ export default function AdminPage() {
               )}
               {filteredKeys.map((key) => {
                 const isProduct = activePage !== 'home' && activePage !== 'tailored';
-                const val = isProduct 
+                const val = isProduct
                   ? (data.products?.[activePage]?.[key] || '')
                   : (data.content[key] || '');
                 const isLong = val.length > 70 || val.includes('\n');
@@ -772,44 +772,6 @@ export default function AdminPage() {
                           {acc}
                         </button>
                       ))}
-                    </div>
-
-                    {/* Cloudflare R2 Upload Widget */}
-                    <div className="border-t border-white/10 pt-4 flex items-center justify-between flex-wrap gap-4">
-                      <div>
-                        <span className="block text-[10px] font-mono text-white/40 uppercase">R2 Media Asset</span>
-                        {mod.image ? (
-                          <div className="flex items-center gap-4 mt-2">
-                            <div className="w-16 h-16 rounded-lg bg-black/50 overflow-hidden flex-shrink-0 border border-white/10 flex items-center justify-center">
-                              <img src={resolveImageUrl(mod.image)} alt="preview" className="max-w-full max-h-full object-contain" />
-                            </div>
-                            <button
-                              type="button"
-                              onClick={() => updateModule(idx, 'image', '')}
-                              className="text-[10px] font-mono text-[#ff7059] hover:underline"
-                            >
-                              remove
-                            </button>
-                          </div>
-                        ) : (
-                          <span className="text-[10px] font-mono text-white/30 mt-1 block">No image uploaded</span>
-                        )}
-                      </div>
-                      <div>
-                        <label className="cursor-pointer inline-flex items-center gap-2 rounded-full border border-white/20 px-3 py-1.5 text-[10px] font-mono font-bold uppercase hover:border-[#b8ef3e] transition">
-                          {uploadingIndex === idx ? 'UPLOADING...' : 'UPLOAD TO R2 ↗'}
-                          <input
-                            type="file"
-                            accept="image/*,video/*"
-                            className="hidden"
-                            disabled={uploadingIndex !== null}
-                            onChange={(e) => {
-                              const file = e.target.files?.[0];
-                              if (file) handleR2Upload(file, idx);
-                            }}
-                          />
-                        </label>
-                      </div>
                     </div>
                   </div>
                 ))}
@@ -1171,12 +1133,12 @@ export default function AdminPage() {
                           setData((prev) => {
                             if (!prev) return prev;
                             const isProduct = activePage !== 'home' && activePage !== 'tailored';
-                            const arr = isProduct 
+                            const arr = isProduct
                               ? [...(prev.products?.[activePage]?.images || [])]
                               : [...(prev.images || [])];
-                            
+
                             arr.push(publicUrl);
-                            
+
                             if (isProduct) {
                               const products = { ...prev.products };
                               products[activePage] = { ...(products[activePage] || {}), images: arr };

@@ -11,6 +11,9 @@ export default function ClientLayout({ id, content, data, moduleData }: { id: st
   let accentColor = '#b8ef3e';
   if (accentKey === 'coral') accentColor = '#ff6b6b';
   else if (accentKey === 'ink') accentColor = '#4a90e2';
+  else if (accentKey === 'sky') accentColor = '#38bdf8';
+  else if (accentKey === 'violet') accentColor = '#8b5cf6';
+  else if (accentKey === 'amber') accentColor = '#fbbf24';
 
   const productData = data?.products?.[id] || {};
   const getVal = (key: string) => productData[key] || '';
@@ -25,7 +28,7 @@ export default function ClientLayout({ id, content, data, moduleData }: { id: st
   const titleHighlight = getVal('hero_title_highlight');
   const desc = getVal('hero_desc');
 
-  const features = getArr('features') as Array<{title: string, desc: string}>;
+  const features = getArr('features') as Array<{ title: string, desc: string }>;
   const comp_title = getVal('comp_title');
   const comp_cloud_title = getVal('comp_cloud_title');
   const comp_sv_title = getVal('comp_sv_title');
@@ -86,7 +89,7 @@ export default function ClientLayout({ id, content, data, moduleData }: { id: st
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
-    gsap.fromTo(".pos-hero-title", 
+    gsap.fromTo(".pos-hero-title",
       { y: 50, opacity: 0, rotationX: -20 },
       { y: 0, opacity: 1, rotationX: 0, duration: 1, ease: "back.out(1.7)" }
     );
@@ -118,7 +121,7 @@ export default function ClientLayout({ id, content, data, moduleData }: { id: st
 
   return (
     <main className="product-page-wrapper" style={{ backgroundColor: '#0e100b', minHeight: '100vh', color: '#f8f7f1', overflowX: 'hidden' }}>
-      
+
       <nav style={{ padding: '24px 40px', position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50, background: 'linear-gradient(to bottom, rgba(14,16,11,0.9), transparent)' }}>
         <Link href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontFamily: 'var(--font-mono)', fontSize: '14px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
           <ArrowLeft size={16} /> Back to Svantham
@@ -127,11 +130,11 @@ export default function ClientLayout({ id, content, data, moduleData }: { id: st
 
       <section style={{ minHeight: '90vh', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', padding: '120px 24px 40px' }}>
         <div style={{ position: 'absolute', inset: 0, background: `radial-gradient(circle at 50% 30%, ${accentColor}1A 0%, transparent 60%)`, zIndex: 0, pointerEvents: 'none' }} />
-        
+
         <div style={{ position: 'relative', maxWidth: '1000px', margin: '0 auto', textAlign: 'center', zIndex: 1 }}>
           <div style={{ display: 'inline-block', padding: '6px 12px', border: `1px solid ${accentColor}`, borderRadius: '100px', color: accentColor, fontFamily: 'var(--font-mono)', fontSize: '12px', letterSpacing: '0.1em', marginBottom: '24px' }}>{eyebrow}</div>
           <h1 className="pos-hero-title" style={{ fontSize: 'clamp(40px, 6vw, 80px)', lineHeight: '1', letterSpacing: '-0.04em', fontWeight: '800', marginBottom: '24px', textShadow: '0 10px 30px rgba(0,0,0,0.5)' }}>
-            {title1}{title2 && <br/>}{title2}{titleHighlight && <br/>}<span style={{ color: accentColor }}>{titleHighlight}</span>
+            {title1}{title2 && <br />}{title2}{titleHighlight && <br />}<span style={{ color: accentColor }}>{titleHighlight}</span>
           </h1>
           <p className="pos-hero-desc" style={{ fontSize: 'clamp(16px, 2vw, 20px)', color: 'rgba(255,255,255,0.7)', maxWidth: '700px', margin: '0 auto', lineHeight: '1.6' }}>
             {desc}
@@ -141,7 +144,7 @@ export default function ClientLayout({ id, content, data, moduleData }: { id: st
 
       <section style={{ padding: '80px 24px', maxWidth: '1200px', margin: '0 auto' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
-          
+
           {features.map((feat, idx) => (
             <div key={idx} className="reveal-card" style={{ background: '#12140f', padding: '40px', borderRadius: '2px', border: '1px solid rgba(255,255,255,0.05)', position: 'relative' }}>
               <div style={{ fontFamily: 'var(--font-mono)', fontSize: '48px', fontWeight: 'bold', color: `${accentColor}33`, position: 'absolute', top: '24px', right: '24px', lineHeight: '1' }}>0{idx + 1}</div>
@@ -308,10 +311,10 @@ export default function ClientLayout({ id, content, data, moduleData }: { id: st
       <section style={{ padding: '120px 24px', maxWidth: '1000px', margin: '0 auto', textAlign: 'center' }}>
         <div className="reveal-card" style={{ background: '#12140f', border: `1px solid ${accentColor}`, borderRadius: '2px', padding: '80px 40px', position: 'relative', overflow: 'hidden' }}>
           <div style={{ position: 'absolute', top: 0, right: 0, padding: '8px 16px', background: accentColor, color: '#000', fontWeight: 'bold', fontFamily: 'var(--font-mono)', fontSize: '12px', letterSpacing: '0.1em' }}>{pricing_tag}</div>
-          
+
           <h2 style={{ fontSize: '32px', fontWeight: 'bold', marginBottom: '16px' }}>{pricing_title}</h2>
           <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '48px', maxWidth: '500px', margin: '0 auto 48px' }}>{pricing_desc}</p>
-          
+
           <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: '8px', marginBottom: '24px' }}>
             <span style={{ fontSize: '64px', fontWeight: '900', letterSpacing: '-0.04em' }}>{pricing_price}</span>
             <span style={{ color: 'rgba(255,255,255,0.5)', fontFamily: 'var(--font-mono)' }}>{pricing_period}</span>

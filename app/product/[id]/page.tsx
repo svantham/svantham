@@ -37,12 +37,125 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
   const resolvedParams = await params;
   const id = resolvedParams.id.toLowerCase();
   const data = await getSvanthamData();
-  
+
   const moduleData = data.modules.find(m => m.id === id) || null;
-  
+
   if (!moduleData) {
     notFound();
   }
-  
+
+  if (!data?.products?.[id]?.hero_title_1) {
+    // Return the WIP Page for all other products
+    return (
+      <div style={{
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        background: 'var(--background)',
+        color: 'var(--foreground)',
+        fontFamily: "'IBM Plex Mono', monospace",
+        position: 'relative'
+      }}>
+        <Link href="/" style={{
+          position: 'absolute',
+          top: '40px',
+          left: '40px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          color: 'var(--muted-foreground)',
+          textDecoration: 'none'
+        }}>
+          <ArrowLeft size={16} /> Back to Suite
+        </Link>
+
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '24px'
+        }}>
+          <div className="crane-container">
+            <div className="crane-tower"></div>
+            <div className="crane-arm"></div>
+            <div className="crane-cable">
+              <div className="crane-hook">
+                <div className="crane-load"></div>
+              </div>
+            </div>
+          </div>
+
+          <div style={{ textAlign: 'center' }}>
+            <h1 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '8px', letterSpacing: '0.05em' }}>
+              SVANTHAM / {id.toUpperCase()}
+            </h1>
+            <p style={{ color: 'var(--muted-foreground)' }}>Building in progress...</p>
+          </div>
+        </div>
+
+        <style dangerouslySetInnerHTML={{
+          __html: `
+        .crane-container {
+          position: relative;
+          width: 100px;
+          height: 100px;
+          margin-bottom: 20px;
+        }
+        .crane-tower {
+          position: absolute;
+          bottom: 0;
+          left: 20px;
+          width: 8px;
+          height: 80px;
+          background: var(--chartreuse);
+        }
+        .crane-arm {
+          position: absolute;
+          bottom: 80px;
+          left: 10px;
+          width: 80px;
+          height: 8px;
+          background: var(--chartreuse);
+        }
+        .crane-cable {
+          position: absolute;
+          top: 20px;
+          right: 15px;
+          width: 2px;
+          height: 40px;
+          background: var(--chartreuse);
+          transform-origin: top;
+          animation: swing 2s ease-in-out infinite alternate;
+        }
+        .crane-hook {
+          position: absolute;
+          bottom: -8px;
+          left: -4px;
+          width: 10px;
+          height: 10px;
+          border: 2px solid var(--chartreuse);
+          border-top: none;
+          border-radius: 0 0 5px 5px;
+        }
+        .crane-load {
+          position: absolute;
+          top: 8px;
+          left: -4px;
+          width: 14px;
+          height: 14px;
+          background: var(--coral);
+          border-radius: 2px;
+        }
+        @keyframes swing {
+          0% { transform: rotate(-25deg); }
+          100% { transform: rotate(25deg); }
+        }
+      `}} />
+      </div>
+    );
+  }
+
   return <ClientLayout id={id} content={data.content} data={data} moduleData={moduleData} />;
 }

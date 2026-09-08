@@ -1,11 +1,10 @@
 import { redis } from './redis';
-import fallbackData from '@/data/content.json';
 
 export interface ModuleItem {
   id: string;
   name: string;
   description: string;
-  accent: 'chartreuse' | 'coral' | 'ink' | string;
+  accent: 'chartreuse' | 'coral' | 'ink' | 'sky' | 'violet' | 'amber' | string;
   image?: string;
 }
 
@@ -47,32 +46,22 @@ export interface SvanthamData {
 }
 
 export async function getSvanthamData(): Promise<SvanthamData> {
-  const fallback = fallbackData as unknown as SvanthamData;
-  if (!redis) {
-    return fallback;
-  }
-
   try {
-    const raw = await redis.get('svantham_data');
-    if (!raw) {
-      return fallback;
-    }
+    const raw = await redis?.get('svantham_data');
 
     const data = typeof raw === 'string' ? JSON.parse(raw) : raw;
-    const mergedData = { ...fallback, ...data };
 
     return {
-      ...mergedData,
-      content: { ...fallback.content, ...(data.content || {}) },
-      modules: Array.isArray(data.modules) && data.modules.length > 0 ? data.modules : fallback.modules,
-      deploymentCards: Array.isArray(data.deploymentCards) && data.deploymentCards.length > 0 ? data.deploymentCards : fallback.deploymentCards,
-      ticker: Array.isArray(data.ticker) && data.ticker.length > 0 ? data.ticker : fallback.ticker,
-      tailoredPortfolio: Array.isArray(data.tailoredPortfolio) && data.tailoredPortfolio.length > 0 ? data.tailoredPortfolio : fallback.tailoredPortfolio || [],
-      products: { ...(fallback.products || {}), ...(data.products || {}) },
+      content: { ...(data.content || {}) },
+      modules: data.modules || [],
+      deploymentCards: data.deploymentCards || [],
+      ticker: data.ticker || [],
+      tailoredPortfolio: data.tailoredPortfolio || [],
+      products: { ...(data.products || {}) },
     };
   } catch (err) {
-    console.warn('Failed to read from Upstash Redis, using fallback data/content.json:', err);
-    return fallback;
+    console.warn('Failed to read from Upstash Redis', err);
+    return {} as SvanthamData;
   }
 }
 
