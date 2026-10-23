@@ -15,24 +15,25 @@ export interface DeploymentCardItem {
 }
 
 export interface ProductData {
-  hero_eyebrow: string;
-  hero_title_1: string;
-  hero_title_2: string;
-  hero_title_highlight: string;
-  hero_desc: string;
-  comp_title: string;
-  comp_cloud_title: string;
-  comp_sv_title: string;
-  pricing_tag: string;
-  pricing_title: string;
-  pricing_desc: string;
-  pricing_price: string;
-  pricing_period: string;
-  pricing_btn: string;
-  features: Array<{ title: string; desc: string }>;
-  comp_cloud_points: string[];
-  comp_sv_points: string[];
-  images: string[];
+  hero_eyebrow?: string;
+  hero_title_1?: string;
+  hero_title_2?: string;
+  hero_desc?: string;
+  hero_btn_features?: string;
+  hero_btn_pricing?: string;
+  hero_pricing_note?: string;
+  hero_sec_title?: string;
+  hero_sec_subtitle?: string;
+  highlights?: Array<{ title: string; desc: string }>;
+  features?: Array<{ title: string; desc: string }>;
+  built_around?: string;
+  comp_title?: string;
+  comp_desc?: string;
+  benefits?: Array<{ title: string; copy: string }>;
+  video_url?: string;
+  images?: string[];
+  faqs?: Array<{ question: string; answer: string }>;
+  [key: string]: any;
 }
 
 export interface SvanthamData {

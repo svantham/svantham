@@ -14,7 +14,7 @@ export default function AdminPage() {
   useEffect(() => {
     if (activePage === 'home') setActiveTab('modules');
     else if (activePage === 'tailored') setActiveTab('portfolio');
-    else setActiveTab('features');
+    else setActiveTab('hero_highlights');
   }, [activePage]);
   const [loaded, setLoaded] = useState(false);
   const [pin, setPin] = useState('');
@@ -139,7 +139,13 @@ export default function AdminPage() {
         : [...(prev[arrayKey] || [])];
 
       if (isObject) {
-        arr.push({ title: 'New Item', desc: 'Description' });
+        if (arrayKey === 'benefits') {
+          arr.push({ title: 'New Benefit', copy: 'Benefit description' });
+        } else if (arrayKey === 'faqs') {
+          arr.push({ question: 'New Question', answer: 'Answer details...' });
+        } else {
+          arr.push({ title: 'New Highlight', desc: 'Highlight description' });
+        }
       } else {
         arr.push('New Point');
       }
@@ -656,24 +662,31 @@ export default function AdminPage() {
                   <>
                     <button
                       type="button"
-                      onClick={() => setActiveTab('features')}
-                      className={`text-[11px] font-mono font-bold tracking-[0.16em] uppercase pb-1 transition shrink-0 whitespace-nowrap ${activeTab === 'features' ? 'text-[#b8ef3e] border-b-2 border-[#b8ef3e]' : 'text-white/40 hover:text-white'}`}
+                      onClick={() => setActiveTab('hero_highlights')}
+                      className={`text-[11px] font-mono font-bold tracking-[0.16em] uppercase pb-1 transition shrink-0 whitespace-nowrap ${activeTab === 'hero_highlights' ? 'text-[#b8ef3e] border-b-2 border-[#b8ef3e]' : 'text-white/40 hover:text-white'}`}
                     >
-                      FEATURES
+                      HERO & HIGHLIGHTS
                     </button>
                     <button
                       type="button"
-                      onClick={() => setActiveTab('comparison')}
-                      className={`text-[11px] font-mono font-bold tracking-[0.16em] uppercase pb-1 transition shrink-0 whitespace-nowrap ${activeTab === 'comparison' ? 'text-[#b8ef3e] border-b-2 border-[#b8ef3e]' : 'text-white/40 hover:text-white'}`}
+                      onClick={() => setActiveTab('why_benefits')}
+                      className={`text-[11px] font-mono font-bold tracking-[0.16em] uppercase pb-1 transition shrink-0 whitespace-nowrap ${activeTab === 'why_benefits' ? 'text-[#b8ef3e] border-b-2 border-[#b8ef3e]' : 'text-white/40 hover:text-white'}`}
                     >
-                      COMPARISON
+                      WHY & BENEFITS
                     </button>
                     <button
                       type="button"
-                      onClick={() => setActiveTab('images')}
-                      className={`text-[11px] font-mono font-bold tracking-[0.16em] uppercase pb-1 transition shrink-0 whitespace-nowrap ${activeTab === 'images' ? 'text-[#b8ef3e] border-b-2 border-[#b8ef3e]' : 'text-white/40 hover:text-white'}`}
+                      onClick={() => setActiveTab('faqs')}
+                      className={`text-[11px] font-mono font-bold tracking-[0.16em] uppercase pb-1 transition shrink-0 whitespace-nowrap ${activeTab === 'faqs' ? 'text-[#b8ef3e] border-b-2 border-[#b8ef3e]' : 'text-white/40 hover:text-white'}`}
                     >
-                      IMAGES
+                      FAQS ({(data?.products?.[activePage]?.faqs || []).length})
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab('workspace_media')}
+                      className={`text-[11px] font-mono font-bold tracking-[0.16em] uppercase pb-1 transition shrink-0 whitespace-nowrap ${activeTab === 'workspace_media' ? 'text-[#b8ef3e] border-b-2 border-[#b8ef3e]' : 'text-white/40 hover:text-white'}`}
+                    >
+                      WORKSPACE & MEDIA
                     </button>
                   </>
                 )}
@@ -994,171 +1007,430 @@ export default function AdminPage() {
               </div>
             )}
 
-            {/* TAB: FEATURES */}
-            {activeTab === 'features' && (
+            {/* TAB: HERO & HIGHLIGHTS */}
+            {activeTab === 'hero_highlights' && (
               <div className="flex flex-col gap-6">
-                {(data?.products?.[activePage]?.features || []).map((feat: any, fIdx: number) => (
-                  <div key={fIdx} className="rounded-2xl bg-[#0c0e16] p-6 border border-white/10 flex flex-col gap-4">
-                    <div className="flex items-center justify-between gap-4">
+                <div className="rounded-2xl bg-[#0c0e16] p-6 border border-white/10 flex flex-col gap-5">
+                  <h3 className="text-xs font-mono font-bold text-[#b8ef3e] uppercase">Hero Header & Copy</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-[10px] font-mono text-white/40 uppercase mb-1">Eyebrow (e.g. MEET PRODUCT POSS)</label>
                       <input
                         type="text"
-                        value={feat.title || ''}
-                        onChange={(e) => updateContentArrayItem('features', fIdx, 'title', e.target.value)}
-                        placeholder="Feature Title"
-                        className="font-bold text-xl bg-transparent outline-none border-b border-transparent focus:border-[#b8ef3e] text-white flex-1 text-left"
+                        value={data?.products?.[activePage]?.hero_eyebrow || ''}
+                        onChange={(e) => updateContent('hero_eyebrow', e.target.value)}
+                        placeholder={`MEET PRODUCT ${activePage.toUpperCase()}`}
+                        className="w-full bg-[#171a25] border border-white/10 rounded-lg p-2.5 text-xs outline-none focus:border-[#b8ef3e]"
                       />
-                      <button type="button" onClick={() => deleteContentArrayItem('features', fIdx)} className="text-[10px] font-mono text-[#ff7059] hover:underline">
-                        DELETE
-                      </button>
                     </div>
                     <div>
-                      <label className="block text-[10px] font-mono text-white/40 uppercase mb-1">Description</label>
-                      <textarea
-                        value={feat.desc || ''}
-                        onChange={(e) => updateContentArrayItem('features', fIdx, 'desc', e.target.value)}
-                        rows={2}
-                        className="w-full bg-[#171a25] border border-white/10 rounded-lg p-2.5 text-xs outline-none focus:border-[#b8ef3e] resize-none"
+                      <label className="block text-[10px] font-mono text-white/40 uppercase mb-1">Title Line 1</label>
+                      <input
+                        type="text"
+                        value={data?.products?.[activePage]?.hero_title_1 || ''}
+                        onChange={(e) => updateContent('hero_title_1', e.target.value)}
+                        placeholder="Your counters."
+                        className="w-full bg-[#171a25] border border-white/10 rounded-lg p-2.5 text-xs outline-none focus:border-[#b8ef3e]"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-mono text-white/40 uppercase mb-1">Title Line 2</label>
+                      <input
+                        type="text"
+                        value={data?.products?.[activePage]?.hero_title_2 || ''}
+                        onChange={(e) => updateContent('hero_title_2', e.target.value)}
+                        placeholder="Always moving"
+                        className="w-full bg-[#171a25] border border-white/10 rounded-lg p-2.5 text-xs outline-none focus:border-[#b8ef3e]"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-mono text-white/40 uppercase mb-1">Pricing Sub-note</label>
+                      <input
+                        type="text"
+                        value={data?.products?.[activePage]?.hero_pricing_note || ''}
+                        onChange={(e) => updateContent('hero_pricing_note', e.target.value)}
+                        placeholder="₹20,000 / year. Your whole team included."
+                        className="w-full bg-[#171a25] border border-white/10 rounded-lg p-2.5 text-xs outline-none focus:border-[#b8ef3e]"
                       />
                     </div>
                   </div>
-                ))}
-                <button type="button" onClick={() => addContentArrayItem('features', true)} className="mt-2 w-full rounded-xl border border-dashed border-white/20 p-4 text-xs font-mono font-bold text-white/40 hover:border-[#b8ef3e] hover:text-[#b8ef3e] transition">
-                  + ADD NEW FEATURE
-                </button>
-              </div>
-            )}
-
-            {/* TAB: COMPARISON */}
-            {activeTab === 'comparison' && (
-              <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-                {/* Cloud Points */}
-                <div className="rounded-2xl bg-[#0c0e16] p-6 border border-[#ff7059]/30 flex flex-col gap-4">
-                  <h3 className="text-xs font-mono font-bold text-[#ff7059] uppercase">Typical SaaS (Cloud)</h3>
-                  {(data?.products?.[activePage]?.comp_cloud_points || []).map((pt: string, i: number) => (
-                    <div key={`cloud-${i}`} className="flex items-center gap-2">
-                      <span className="text-xs font-mono text-white/30">✕</span>
+                  <div>
+                    <label className="block text-[10px] font-mono text-white/40 uppercase mb-1">Hero Description</label>
+                    <textarea
+                      value={data?.products?.[activePage]?.hero_desc || ''}
+                      onChange={(e) => updateContent('hero_desc', e.target.value)}
+                      rows={2}
+                      placeholder="Brief overview description of the product..."
+                      className="w-full bg-[#171a25] border border-white/10 rounded-lg p-2.5 text-xs outline-none focus:border-[#b8ef3e] resize-none"
+                    />
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-white/5 pt-4">
+                    <div>
+                      <label className="block text-[10px] font-mono text-white/40 uppercase mb-1">Primary CTA Button</label>
                       <input
                         type="text"
-                        value={pt}
-                        onChange={(e) => updateContentArrayItem('comp_cloud_points', i, null, e.target.value)}
-                        className="w-full bg-transparent border-b border-white/10 text-xs outline-none focus:border-[#ff7059]"
+                        value={data?.products?.[activePage]?.hero_btn_features || ''}
+                        onChange={(e) => updateContent('hero_btn_features', e.target.value)}
+                        placeholder="See features"
+                        className="w-full bg-[#171a25] border border-white/10 rounded-lg p-2.5 text-xs outline-none focus:border-[#b8ef3e]"
                       />
-                      <button type="button" onClick={() => deleteContentArrayItem('comp_cloud_points', i)} className="text-[10px] font-mono text-white/30 hover:text-[#ff7059]">✕</button>
                     </div>
-                  ))}
-                  <button type="button" onClick={() => addContentArrayItem('comp_cloud_points', false)} className="mt-2 w-full rounded border border-dashed border-[#ff7059]/30 p-2 text-[10px] font-mono font-bold text-white/30 hover:border-[#ff7059] hover:text-[#ff7059] transition">
-                    + ADD POINT
-                  </button>
-                </div>
-
-                {/* SV Points */}
-                <div className="rounded-2xl bg-[#0c0e16] p-6 border border-[#b8ef3e]/30 flex flex-col gap-4">
-                  <h3 className="text-xs font-mono font-bold text-[#b8ef3e] uppercase">Svantham {activePage.toUpperCase()}</h3>
-                  {(data?.products?.[activePage]?.comp_sv_points || []).map((pt: string, i: number) => (
-                    <div key={`sv-${i}`} className="flex items-center gap-2">
-                      <span className="text-xs font-mono text-[#b8ef3e]">✓</span>
+                    <div>
+                      <label className="block text-[10px] font-mono text-white/40 uppercase mb-1">Secondary CTA Button</label>
                       <input
                         type="text"
-                        value={pt}
-                        onChange={(e) => updateContentArrayItem('comp_sv_points', i, null, e.target.value)}
-                        className="w-full bg-transparent border-b border-white/10 text-xs outline-none focus:border-[#b8ef3e]"
+                        value={data?.products?.[activePage]?.hero_btn_pricing || ''}
+                        onChange={(e) => updateContent('hero_btn_pricing', e.target.value)}
+                        placeholder="View pricing"
+                        className="w-full bg-[#171a25] border border-white/10 rounded-lg p-2.5 text-xs outline-none focus:border-[#b8ef3e]"
                       />
-                      <button type="button" onClick={() => deleteContentArrayItem('comp_sv_points', i)} className="text-[10px] font-mono text-white/30 hover:text-[#ff7059]">✕</button>
                     </div>
-                  ))}
-                  <button type="button" onClick={() => addContentArrayItem('comp_sv_points', false)} className="mt-2 w-full rounded border border-dashed border-[#b8ef3e]/30 p-2 text-[10px] font-mono font-bold text-white/30 hover:border-[#b8ef3e] hover:text-[#b8ef3e] transition">
-                    + ADD POINT
-                  </button>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-white/5 pt-4">
+                    <div>
+                      <label className="block text-[10px] font-mono text-white/40 uppercase mb-1">Security Badge Title</label>
+                      <input
+                        type="text"
+                        value={data?.products?.[activePage]?.hero_sec_title || ''}
+                        onChange={(e) => updateContent('hero_sec_title', e.target.value)}
+                        placeholder="Your data stays yours."
+                        className="w-full bg-[#171a25] border border-white/10 rounded-lg p-2.5 text-xs outline-none focus:border-[#b8ef3e]"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-mono text-white/40 uppercase mb-1">Security Badge Subtitle</label>
+                      <input
+                        type="text"
+                        value={data?.products?.[activePage]?.hero_sec_subtitle || ''}
+                        onChange={(e) => updateContent('hero_sec_subtitle', e.target.value)}
+                        placeholder="On-prem. On your terms."
+                        className="w-full bg-[#171a25] border border-white/10 rounded-lg p-2.5 text-xs outline-none focus:border-[#b8ef3e]"
+                      />
+                    </div>
+                  </div>
                 </div>
-              </div>
-            )}
 
-            {/* TAB: IMAGES */}
-            {activeTab === 'images' && (
-              <div className="flex flex-col gap-6">
-                {(data?.products?.[activePage]?.images || []).map((imgUrl: string, iIdx: number, allImgs: string[]) => (
-                  <div key={iIdx} className="flex items-center gap-4 bg-white/5 p-3 rounded-xl border border-white/10">
-                    <div className="w-16 h-16 rounded-lg bg-black/50 overflow-hidden flex-shrink-0 border border-white/10 flex items-center justify-center">
-                      <img src={resolveImageUrl(imgUrl)} alt="preview" className="max-w-full max-h-full object-contain" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-[10px] font-mono text-white/40 uppercase">
-                        Image #{iIdx + 1}
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-xs font-mono font-bold text-[#b8ef3e] uppercase">3 Value Highlight Pillars (Below Showcase)</h3>
+                    <button
+                      type="button"
+                      onClick={() => addContentArrayItem('highlights', true)}
+                      className="text-[10px] font-mono font-bold text-[#b8ef3e] hover:underline"
+                    >
+                      + ADD PILLAR
+                    </button>
+                  </div>
+                  {((data?.products?.[activePage]?.highlights || data?.products?.[activePage]?.features) || []).map((feat: any, fIdx: number) => (
+                    <div key={fIdx} className="rounded-2xl bg-[#0c0e16] p-5 border border-white/10 flex flex-col gap-3">
+                      <div className="flex items-center justify-between gap-4">
+                        <input
+                          type="text"
+                          value={feat.title || ''}
+                          onChange={(e) => updateContentArrayItem(data?.products?.[activePage]?.highlights ? 'highlights' : 'features', fIdx, 'title', e.target.value)}
+                          placeholder="Pillar Title"
+                          className="font-bold text-base bg-transparent outline-none border-b border-transparent focus:border-[#b8ef3e] text-white flex-1 text-left"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => deleteContentArrayItem(data?.products?.[activePage]?.highlights ? 'highlights' : 'features', fIdx)}
+                          className="text-[10px] font-mono text-[#ff7059] hover:underline"
+                        >
+                          DELETE
+                        </button>
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-mono text-white/40 uppercase mb-1">Detail</label>
+                        <input
+                          type="text"
+                          value={feat.desc || ''}
+                          onChange={(e) => updateContentArrayItem(data?.products?.[activePage]?.highlights ? 'highlights' : 'features', fIdx, 'desc', e.target.value)}
+                          placeholder="Short detail description..."
+                          className="w-full bg-[#171a25] border border-white/10 rounded-lg p-2 text-xs outline-none focus:border-[#b8ef3e]"
+                        />
                       </div>
                     </div>
-                    <div className="flex items-center gap-1.5">
-                      <button
-                        type="button"
-                        onClick={() => moveContentArrayItem('images', iIdx, -1)}
-                        disabled={iIdx === 0}
-                        className="px-2.5 py-1 text-xs font-mono border border-white/10 rounded disabled:opacity-25 hover:border-[#b8ef3e] transition"
-                        title="Move Up"
-                      >
-                        ↑
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => moveContentArrayItem('images', iIdx, 1)}
-                        disabled={iIdx === allImgs.length - 1}
-                        className="px-2.5 py-1 text-xs font-mono border border-white/10 rounded disabled:opacity-25 hover:border-[#b8ef3e] transition"
-                        title="Move Down"
-                      >
-                        ↓
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => deleteContentArrayItem('images', iIdx)}
-                        className="px-2.5 py-1 text-xs font-mono text-[#ff7059] border border-[#ff7059]/30 rounded hover:bg-[#ff7059]/10 ml-2 transition"
-                        title="Delete Image"
-                      >
-                        ✕
-                      </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* TAB: WHY & BENEFITS */}
+            {activeTab === 'why_benefits' && (
+              <div className="flex flex-col gap-6">
+                <div className="rounded-2xl bg-[#0c0e16] p-6 border border-white/10 flex flex-col gap-4">
+                  <h3 className="text-xs font-mono font-bold text-[#b8ef3e] uppercase">Why Section Copy</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-[10px] font-mono text-white/40 uppercase mb-1">Section Eyebrow</label>
+                      <input
+                        type="text"
+                        value={data?.products?.[activePage]?.built_around || ''}
+                        onChange={(e) => updateContent('built_around', e.target.value)}
+                        placeholder="BUILT AROUND OWNERSHIP"
+                        className="w-full bg-[#171a25] border border-white/10 rounded-lg p-2.5 text-xs outline-none focus:border-[#b8ef3e]"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-mono text-white/40 uppercase mb-1">Main Heading</label>
+                      <input
+                        type="text"
+                        value={data?.products?.[activePage]?.comp_title || ''}
+                        onChange={(e) => updateContent('comp_title', e.target.value)}
+                        placeholder={`A ${activePage.toUpperCase()} that answers to your business.`}
+                        className="w-full bg-[#171a25] border border-white/10 rounded-lg p-2.5 text-xs outline-none focus:border-[#b8ef3e]"
+                      />
                     </div>
                   </div>
-                ))}
+                  <div>
+                    <label className="block text-[10px] font-mono text-white/40 uppercase mb-1">Intro Description</label>
+                    <textarea
+                      value={data?.products?.[activePage]?.comp_desc || ''}
+                      onChange={(e) => updateContent('comp_desc', e.target.value)}
+                      rows={2}
+                      placeholder="Why this product stands out..."
+                      className="w-full bg-[#171a25] border border-white/10 rounded-lg p-2.5 text-xs outline-none focus:border-[#b8ef3e] resize-none"
+                    />
+                  </div>
+                </div>
 
-                <label className="mt-2 w-full cursor-pointer flex items-center justify-center rounded-xl border border-dashed border-white/20 p-4 text-xs font-mono font-bold text-white/40 hover:border-[#b8ef3e] hover:text-[#b8ef3e] transition">
-                  {uploadingIndex !== null ? 'UPLOADING...' : '+ UPLOAD NEW IMAGE ↗'}
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-xs font-mono font-bold text-[#b8ef3e] uppercase">3 Benefit Cards</h3>
+                    <button
+                      type="button"
+                      onClick={() => addContentArrayItem('benefits', true)}
+                      className="text-[10px] font-mono font-bold text-[#b8ef3e] hover:underline"
+                    >
+                      + ADD BENEFIT CARD
+                    </button>
+                  </div>
+                  {(data?.products?.[activePage]?.benefits || []).map((b: any, bIdx: number) => (
+                    <div key={bIdx} className="rounded-2xl bg-[#0c0e16] p-5 border border-white/10 flex flex-col gap-3">
+                      <div className="flex items-center justify-between gap-4">
+                        <input
+                          type="text"
+                          value={b.title || ''}
+                          onChange={(e) => updateContentArrayItem('benefits', bIdx, 'title', e.target.value)}
+                          placeholder="Benefit Title"
+                          className="font-bold text-base bg-transparent outline-none border-b border-transparent focus:border-[#b8ef3e] text-white flex-1 text-left"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => deleteContentArrayItem('benefits', bIdx)}
+                          className="text-[10px] font-mono text-[#ff7059] hover:underline"
+                        >
+                          DELETE
+                        </button>
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-mono text-white/40 uppercase mb-1">Copy</label>
+                        <textarea
+                          value={b.copy || ''}
+                          onChange={(e) => updateContentArrayItem('benefits', bIdx, 'copy', e.target.value)}
+                          rows={2}
+                          placeholder="Benefit explanation..."
+                          className="w-full bg-[#171a25] border border-white/10 rounded-lg p-2.5 text-xs outline-none focus:border-[#b8ef3e] resize-none"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* TAB: FAQS */}
+            {activeTab === 'faqs' && (
+              <div className="flex flex-col gap-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-xs font-mono font-bold text-[#b8ef3e] uppercase">{activePage.toUpperCase()} Frequently Asked Questions</h3>
+                    <p className="text-xs text-white/40 mt-0.5">Customize the plain-language FAQ accordion rendered on this product page.</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => addContentArrayItem('faqs', true)}
+                    className="rounded-full bg-[#b8ef3e] px-4 py-1.5 text-[10px] font-mono font-black text-[#161714] transition hover:bg-white"
+                  >
+                    + ADD FAQ
+                  </button>
+                </div>
+
+                {(!data?.products?.[activePage]?.faqs || data?.products?.[activePage]?.faqs.length === 0) ? (
+                  <div className="rounded-2xl bg-[#0c0e16] p-8 border border-white/10 text-center flex flex-col items-center gap-4">
+                    <p className="text-sm text-white/50">No custom FAQs defined yet for this product. Default system FAQs will display until you add your own.</p>
+                    <button
+                      type="button"
+                      onClick={() => addContentArrayItem('faqs', true)}
+                      className="rounded-xl border border-dashed border-[#b8ef3e]/40 px-5 py-3 text-xs font-mono font-bold text-[#b8ef3e] hover:bg-[#b8ef3e]/10 transition"
+                    >
+                      + ADD FIRST FAQ
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-4">
+                    {(data?.products?.[activePage]?.faqs || []).map((faq: any, idx: number, allFaqs: any[]) => (
+                      <div key={idx} className="rounded-2xl bg-[#0c0e16] p-6 border border-white/10 flex flex-col gap-4">
+                        <div className="flex items-center justify-between gap-4">
+                          <span className="text-xs font-mono font-bold text-[#b8ef3e] px-2 py-0.5 rounded bg-[#b8ef3e]/10">
+                            Q{idx + 1}
+                          </span>
+                          <input
+                            type="text"
+                            value={faq.question || ''}
+                            onChange={(e) => updateContentArrayItem('faqs', idx, 'question', e.target.value)}
+                            placeholder="Question"
+                            className="font-bold text-base bg-transparent outline-none border-b border-transparent focus:border-[#b8ef3e] text-white flex-1 text-left"
+                          />
+                          <div className="flex items-center gap-1.5">
+                            <button
+                              type="button"
+                              onClick={() => moveContentArrayItem('faqs', idx, -1)}
+                              disabled={idx === 0}
+                              className="px-2 py-1 text-xs font-mono border border-white/10 rounded disabled:opacity-25 hover:border-[#b8ef3e] transition"
+                              title="Move Up"
+                            >
+                              ↑
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => moveContentArrayItem('faqs', idx, 1)}
+                              disabled={idx === allFaqs.length - 1}
+                              className="px-2 py-1 text-xs font-mono border border-white/10 rounded disabled:opacity-25 hover:border-[#b8ef3e] transition"
+                              title="Move Down"
+                            >
+                              ↓
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => deleteContentArrayItem('faqs', idx)}
+                              className="text-[10px] font-mono text-[#ff7059] border border-[#ff7059]/30 px-2 py-1 rounded hover:bg-[#ff7059]/10 ml-1 transition"
+                            >
+                              DELETE
+                            </button>
+                          </div>
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-mono text-white/40 uppercase mb-1">Answer</label>
+                          <textarea
+                            value={faq.answer || ''}
+                            onChange={(e) => updateContentArrayItem('faqs', idx, 'answer', e.target.value)}
+                            rows={3}
+                            placeholder="Detailed answer..."
+                            className="w-full bg-[#171a25] border border-white/10 rounded-lg p-2.5 text-xs outline-none focus:border-[#b8ef3e] resize-none"
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* TAB: WORKSPACE & MEDIA */}
+            {activeTab === 'workspace_media' && (
+              <div className="flex flex-col gap-6">
+                <div className="rounded-2xl bg-[#0c0e16] p-6 border border-white/10 flex flex-col gap-3">
+                  <h3 className="text-xs font-mono font-bold text-[#b8ef3e] uppercase">Video Preview URL</h3>
+                  <p className="text-xs text-white/40">Provide an MP4 or web video URL to render in the interactive preview frame.</p>
                   <input
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    disabled={uploadingIndex !== null}
-                    onChange={async (e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        setUploadingIndex(-1);
-                        try {
-                          const publicUrl = await uploadToR2(file);
-                          setData((prev) => {
-                            if (!prev) return prev;
-                            const isProduct = activePage !== 'home' && activePage !== 'tailored';
-                            const arr = isProduct
-                              ? [...(prev.products?.[activePage]?.images || [])]
-                              : [...(prev.images || [])];
-
-                            arr.push(publicUrl);
-
-                            if (isProduct) {
-                              const products = { ...prev.products };
-                              products[activePage] = { ...(products[activePage] || {}), images: arr };
-                              return { ...prev, products };
-                            } else {
-                              return { ...prev, images: arr };
-                            }
-                          });
-                          setStatus('UPLOAD COMPLETE ✓');
-                          setTimeout(() => setStatus(''), 3000);
-                        } catch (err: any) {
-                          setStatus('UPLOAD ERROR: ' + err.message);
-                          alert('Upload failed: ' + err.message);
-                        } finally {
-                          setUploadingIndex(null);
-                        }
-                      }
-                    }}
+                    type="text"
+                    value={data?.products?.[activePage]?.video_url || ''}
+                    onChange={(e) => updateContent('video_url', e.target.value)}
+                    placeholder="/placeholder.mp4 or https://..."
+                    className="w-full bg-[#171a25] border border-white/10 rounded-lg p-2.5 text-xs outline-none focus:border-[#b8ef3e]"
                   />
-                </label>
+                </div>
+
+                <div className="flex flex-col gap-4">
+                  <h3 className="text-xs font-mono font-bold text-[#b8ef3e] uppercase">Product Screenshots & Images</h3>
+                  {(data?.products?.[activePage]?.images || []).map((imgUrl: string, iIdx: number, allImgs: string[]) => (
+                    <div key={iIdx} className="flex items-center gap-4 bg-white/5 p-3 rounded-xl border border-white/10">
+                      <div className="w-16 h-16 rounded-lg bg-black/50 overflow-hidden flex-shrink-0 border border-white/10 flex items-center justify-center">
+                        <img src={resolveImageUrl(imgUrl)} alt="preview" className="max-w-full max-h-full object-contain" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-[10px] font-mono text-white/40 uppercase">
+                          Image #{iIdx + 1}
+                        </div>
+                        <div className="text-xs text-white/60 truncate font-mono mt-0.5">
+                          {imgUrl}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => moveContentArrayItem('images', iIdx, -1)}
+                          disabled={iIdx === 0}
+                          className="px-2.5 py-1 text-xs font-mono border border-white/10 rounded disabled:opacity-25 hover:border-[#b8ef3e] transition"
+                          title="Move Up"
+                        >
+                          ↑
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => moveContentArrayItem('images', iIdx, 1)}
+                          disabled={iIdx === allImgs.length - 1}
+                          className="px-2.5 py-1 text-xs font-mono border border-white/10 rounded disabled:opacity-25 hover:border-[#b8ef3e] transition"
+                          title="Move Down"
+                        >
+                          ↓
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => deleteContentArrayItem('images', iIdx)}
+                          className="px-2.5 py-1 text-xs font-mono text-[#ff7059] border border-[#ff7059]/30 rounded hover:bg-[#ff7059]/10 ml-2 transition"
+                          title="Delete Image"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+
+                  <label className="mt-2 w-full cursor-pointer flex items-center justify-center rounded-xl border border-dashed border-white/20 p-4 text-xs font-mono font-bold text-white/40 hover:border-[#b8ef3e] hover:text-[#b8ef3e] transition">
+                    {uploadingIndex !== null ? 'UPLOADING...' : '+ UPLOAD NEW IMAGE ↗'}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      disabled={uploadingIndex !== null}
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          setUploadingIndex(-1);
+                          try {
+                            const publicUrl = await uploadToR2(file);
+                            setData((prev) => {
+                              if (!prev) return prev;
+                              const isProduct = activePage !== 'home' && activePage !== 'tailored';
+                              const arr = isProduct
+                                ? [...(prev.products?.[activePage]?.images || [])]
+                                : [...(prev.images || [])];
+
+                              arr.push(publicUrl);
+
+                              if (isProduct) {
+                                const products = { ...prev.products };
+                                products[activePage] = { ...(products[activePage] || {}), images: arr };
+                                return { ...prev, products };
+                              } else {
+                                return { ...prev, images: arr };
+                              }
+                            });
+                            setStatus('UPLOAD COMPLETE ✓');
+                            setTimeout(() => setStatus(''), 3000);
+                          } catch (err: any) {
+                            setStatus('UPLOAD ERROR: ' + err.message);
+                            alert('Upload failed: ' + err.message);
+                          } finally {
+                            setUploadingIndex(null);
+                          }
+                        }
+                      }}
+                    />
+                  </label>
+                </div>
               </div>
             )}
 
