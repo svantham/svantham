@@ -7,6 +7,8 @@ import { ArrowRight, ArrowUpRight, Menu, X } from "lucide-react"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Brand } from "@/components/landing/motion"
 import { ProductsDropdown, productList } from "@/components/navigation/products-dropdown"
+import { contact } from "@/lib/site-content"
+import { useContent } from "@/components/data-provider"
 import { cn } from "@/lib/utils"
 
 export function Header() {
@@ -17,7 +19,7 @@ export function Header() {
     <>
       <div className="announcement">
         <a href="#products" className="announcement-link">
-          Big ambitions. Not big software bills.<span className="hidden sm:inline"> Meet your unfair advantage.</span>
+          {useContent('announcement_text_1', 'Big ambitions. Not big software bills.')}<span className="hidden sm:inline">{useContent('announcement_text_2', ' Meet your unfair advantage.')}</span>
           <ArrowRight className="size-3.5" aria-hidden="true" />
         </a>
       </div>
@@ -29,15 +31,17 @@ export function Header() {
             </Link>
           </div>
 
-          <nav className="hidden items-center justify-center gap-8 md:flex" aria-label="Main navigation">
+          <nav className="hidden items-center justify-center gap-6 lg:gap-8 md:flex" aria-label="Main navigation">
             <ProductsDropdown />
-            <a className="nav-link" href="#difference">Why Svantham</a>
-            <a className="nav-link" href="#faq">FAQs</a>
+            <a className="nav-link" href="#products">{useContent('landing_nav_suite', 'The Suite')}</a>
+            <Link className="nav-link" href="/tailored">{useContent('landing_nav_tailored', 'Tailored Studio')}</Link>
+            <a className="nav-link" href="#faq">{useContent('landing_nav_faq', 'FAQs')}</a>
+            <a className="nav-link" href={`mailto:${contact.email}`}>{useContent('landing_nav_contact', 'Contact')}</a>
           </nav>
 
           <div className="flex flex-1 items-center justify-end gap-3">
             <a href="#products" className={cn(buttonVariants({ variant: "default", size: "lg" }), "header-cta hidden md:inline-flex")}>
-              Find your software<ArrowUpRight data-icon="inline-end" />
+              {useContent('landing_nav_cta', 'Find your software')}<ArrowUpRight data-icon="inline-end" />
             </a>
             <Button
               className="md:hidden"
@@ -87,10 +91,11 @@ export function Header() {
                     <ArrowUpRight className="size-4" />
                   </Link>
                 </div>
-                <a className="px-2 py-1.5 text-base font-medium" href="#difference" onClick={() => setOpen(false)}>Why Svantham</a>
-                <a className="px-2 py-1.5 text-base font-medium" href="#faq" onClick={() => setOpen(false)}>FAQs</a>
+                <a className="px-2 py-1.5 text-base font-medium" href="#products" onClick={() => setOpen(false)}>{useContent('landing_nav_suite', 'The Suite')}</a>
+                <a className="px-2 py-1.5 text-base font-medium" href="#faq" onClick={() => setOpen(false)}>{useContent('landing_nav_faq', 'FAQs')}</a>
+                <a className="px-2 py-1.5 text-base font-medium" href={`mailto:${contact.email}`} onClick={() => setOpen(false)}>{useContent('landing_nav_contact', 'Contact')}</a>
                 <a href="#products" onClick={() => setOpen(false)} className={cn(buttonVariants({ variant: "default", size: "lg" }), "w-full justify-center mt-2")}>
-                  Find your software<ArrowUpRight data-icon="inline-end" />
+                  {useContent('landing_nav_cta', 'Find your software')}<ArrowUpRight data-icon="inline-end" />
                 </a>
               </div>
             </motion.nav>

@@ -6,6 +6,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { buttonVariants } from "@/components/ui/button"
 import { Brand, Reveal, SectionLabel } from "@/components/landing/motion"
 import { products } from "@/components/landing/products"
+import { contact } from "@/lib/site-content"
 import { cn } from "@/lib/utils"
 import { useContent } from "@/components/data-provider"
 
@@ -34,7 +35,7 @@ export function SiteFooter() {
   return (
     <footer className="site-footer">
       <div className="page-container">
-        <div className="footer-main"><div className="footer-brand"><a href="#" aria-label="Svantham home"><Brand /></a><p>{useContent('landing_footer_brand_p_1', 'Business software.')}<br />{useContent('landing_footer_brand_p_2', 'On your terms.')}</p></div><nav aria-label="Product links" className="footer-nav"><p>{useContent('landing_footer_suite', 'THE SUITE')}</p><div>{products.map((product) => <Link key={product.slug} href={`/product/${product.slug}`} prefetch={false}>{product.name}<ArrowUpRight className="size-3.5" aria-hidden="true" /></Link>)}</div></nav><nav aria-label="Company links" className="footer-nav"><p>{useContent('landing_footer_way', 'THE SVANTHAM WAY')}</p><div><a href="#difference">{useContent('landing_footer_difference', 'Why Svantham')}</a><a href="#faq">{useContent('landing_footer_faq', 'FAQs')}</a></div></nav><a href="#" className="back-to-top" aria-label="Back to top"><ArrowUp className="size-5" aria-hidden="true" /></a></div>
+        <div className="footer-main"><div className="footer-brand"><a href="#" aria-label="Svantham home"><Brand /></a><p>{useContent('landing_footer_brand_p_1', 'Business software.')}<br />{useContent('landing_footer_brand_p_2', 'On your terms.')}</p></div><nav aria-label="Product links" className="footer-nav"><p>{useContent('landing_footer_suite', 'THE SUITE')}</p><div>{products.map((product) => <Link key={product.slug} href={`/product/${product.slug}`} prefetch={false}>{product.name}<ArrowUpRight className="size-3.5" aria-hidden="true" /></Link>)}</div></nav><nav aria-label="Company links" className="footer-nav"><p>{useContent('landing_footer_way', 'THE SVANTHAM WAY')}</p><div><Link href="/tailored">{useContent('landing_footer_tailored', 'Tailored Studio')}</Link><a href="#faq">{useContent('landing_footer_faq', 'FAQs')}</a><a href={`mailto:${contact.email}`}>{useContent('landing_footer_contact', 'Contact')}</a></div></nav><a href="#" className="back-to-top" aria-label="Back to top"><ArrowUp className="size-5" aria-hidden="true" /></a></div>
         <div className="footer-bottom"><p>© {new Date().getFullYear()} Svantham. {useContent('landing_footer_rights', 'All rights reserved.')}</p></div>
       </div>
     </footer>

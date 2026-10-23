@@ -39,7 +39,7 @@ function WorkspacePreview() {
         <motion.div className="workspace-window" initial={{ clipPath: reduced ? "inset(0% 0% 0% 0% round 12px)" : "inset(0% 0% 100% 0% round 12px)" }} animate={{ clipPath: "inset(0% 0% 0% 0% round 12px)" }} transition={{ delay: reduced ? 0 : 0.2, duration: reduced ? 0 : 1.15, ease: [0.22, 1, 0.36, 1] }}>
           <div className="workspace-chrome">
             <div className="flex items-center gap-1.5" aria-hidden="true"><span /><span /><span /></div>
-            <p><LockKeyhole className="size-3" aria-hidden="true" />Your infrastructure. Your workspace.</p>
+            <p><LockKeyhole className="size-3" aria-hidden="true" />Dedicated instance. Your workspace.</p>
             <LayoutGrid className="size-3.5 text-muted-foreground" aria-hidden="true" />
           </div>
           <div className="workspace-tabs" role="tablist" aria-label="Product preview">
@@ -68,10 +68,10 @@ function WorkspacePreview() {
 }
 
 const benefits = [
-  { icon: Server, title: "On-premise first", detail: "Your servers. Your control." },
+  { icon: Server, title: "Dedicated VPS workspace", detail: "5 GB storage. Your private instance." },
   { icon: InfinityIcon, title: "No per-seat pricing", detail: "Grow your team, not your bill." },
-  { icon: ShieldCheck, title: "AMC included", detail: "Maintenance, not an add-on." },
-  { icon: Cloud, title: "Cloud when you need it", detail: "Your deployment. Your choice." },
+  { icon: ShieldCheck, title: "1-on-1 support included", detail: "Continuous updates. Zero hidden fees." },
+  { icon: Cloud, title: "Fully managed cloud", detail: "Automated backups. 99.9% uptime." },
 ]
 
 export function Hero() {
@@ -79,9 +79,9 @@ export function Hero() {
   const heroTitle1 = useContent('landing_home_hero_title1', 'Your business.');
   const heroTitle2 = useContent('landing_home_hero_title2', 'Your software.');
   const heroTitle3 = useContent('landing_home_hero_title3', 'Your rules.');
-  const heroDesc = useContent('landing_home_hero_desc', 'Powerful software that runs on your infrastructure. Not per-seat. Not needlessly complicated. Just built for the way you do business.');
+  const heroDesc = useContent('landing_home_hero_desc', 'Powerful software with dedicated VPS performance and 5 GB storage. Not per-seat. Not needlessly complicated. Just built for the way you do business.');
   const heroBtn1 = useContent('landing_home_hero_btn1', 'Explore our products');
-  const heroBtn2 = useContent('landing_home_hero_btn2', 'The Svantham difference');
+  const heroBtn2 = useContent('landing_home_hero_btn2', 'Common questions');
   const heroPrice = useContent('landing_home_hero_price', '₹1,000 / month. Unlimited users. 1 on 1 support.');
 
   return (
@@ -94,7 +94,7 @@ export function Hero() {
           <Reveal delay={0.35}>
             <div className="hero-actions">
               <a href="#products" className={cn(buttonVariants({ size: "lg" }), "hero-cta")}>{heroBtn1}<ArrowUpRight data-icon="inline-end" /></a>
-              <a href="#difference" className="text-link">{heroBtn2}<ArrowDown className="size-4" aria-hidden="true" /></a>
+              <a href="#faq" className="text-link">{heroBtn2}<ArrowDown className="size-4" aria-hidden="true" /></a>
             </div>
             <div className="hero-price"><span className="price-dot" aria-hidden="true" /><span><strong>{heroPrice.split('. ')[0]}.</strong> {heroPrice.split('. ').slice(1).join('. ')}</span></div>
           </Reveal>

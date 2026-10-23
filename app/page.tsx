@@ -1,7 +1,6 @@
 import { Header } from "@/components/landing/header"
 import { Hero } from "@/components/landing/hero"
 import { Products } from "@/components/landing/products"
-import { Difference } from "@/components/landing/difference"
 import { Closing, SiteFooter } from "@/components/landing/closing"
 import { MotionProvider } from "@/components/landing/motion"
 
@@ -18,7 +17,6 @@ export default async function Page() {
         <main id="main-content">
           <Hero />
           <Products />
-          <Difference />
           <Closing />
         </main>
         <SiteFooter />
