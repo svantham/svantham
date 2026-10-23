@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useEffect, useState, useMemo } from 'react';
-import type { SvanthamData, ModuleItem, DeploymentCardItem } from '@/lib/get-data';
+import type { SvanthamData, ModuleItem, DeploymentCardItem, TailoredProjectItem } from '@/lib/get-data';
+import { projects as defaultProjects } from '@/lib/site-content';
 
 export default function AdminPage() {
   const [data, setData] = useState<SvanthamData | null>(null);
@@ -176,14 +177,27 @@ export default function AdminPage() {
   const addTailoredPortfolio = () => {
     setData((prev) => {
       if (!prev) return prev;
-      const newProj = {
+      const newProj: TailoredProjectItem = {
         id: `project-${Date.now()}`,
+        title: 'New Project',
         name: 'New Project',
-        client: 'Client Name',
-        category: 'software',
-        description: { challenge: '', solution: '', impact: '' },
+        category: 'Software',
+        discipline: 'Custom platform · UI/UX · Development',
+        color: 'sage',
+        shortDescription: 'Short project summary for card preview.',
+        description: 'Detailed description of the project challenge, approach, and outcomes.',
+        images: ['/placeholder.svg?height=880&width=1250'],
+        image: '/placeholder.svg?height=880&width=1250',
+        scope: ['Product strategy', 'Interface design', 'Full-stack development'],
       };
       return { ...prev, tailoredPortfolio: [...(prev.tailoredPortfolio || []), newProj] };
+    });
+  };
+
+  const importDefaultTailoredPortfolio = () => {
+    setData((prev) => {
+      if (!prev) return prev;
+      return { ...prev, tailoredPortfolio: [...defaultProjects] };
     });
   };
 
@@ -381,11 +395,13 @@ export default function AdminPage() {
       setData((prev) => {
         if (!prev) return prev;
         const arr = [...(prev.tailoredPortfolio || [])];
-        if (field === 'images') {
-          arr[portfolioIndex] = { ...arr[portfolioIndex], images: [...(arr[portfolioIndex].images || []), publicUrl] };
-        } else {
-          arr[portfolioIndex] = { ...arr[portfolioIndex], logo: publicUrl };
-        }
+        const currentImages = Array.isArray(arr[portfolioIndex].images) ? arr[portfolioIndex].images : [];
+        const newImages = [...currentImages, publicUrl];
+        arr[portfolioIndex] = {
+          ...arr[portfolioIndex],
+          images: newImages,
+          image: arr[portfolioIndex].image || publicUrl,
+        };
         return { ...prev, tailoredPortfolio: arr };
       });
       setStatus('UPLOAD COMPLETE ✓');
@@ -860,111 +876,153 @@ export default function AdminPage() {
             {/* TAB: PORTFOLIO */}
             {activeTab === 'portfolio' && (
               <div className="flex flex-col gap-6">
-                {(data.tailoredPortfolio || []).map((proj, pIdx) => (
-                  <div key={proj.id || pIdx} className="rounded-2xl bg-[#0c0e16] p-6 border border-white/10 flex flex-col gap-4">
-                    <div className="flex items-center gap-4">
-                      <input
-                        type="text"
-                        value={proj.name || ''}
-                        onChange={(e) => updateTailoredPortfolio(pIdx, 'name', e.target.value)}
-                        className="font-bold text-xl bg-transparent outline-none border-b border-transparent focus:border-[#b8ef3e] text-white flex-1 text-left"
-                        placeholder="Project Name"
-                      />
-                      <button type="button" onClick={() => deleteTailoredPortfolio(pIdx)} className="text-[10px] font-mono text-[#ff7059] hover:underline">
-                        DELETE
-                      </button>
-                    </div>
+                {(data.tailoredPortfolio || []).length === 0 && (
+                  <div className="rounded-2xl bg-[#0c0e16] p-8 border border-white/10 text-center flex flex-col items-center gap-4">
+                    <p className="text-sm text-white/60">No customized projects in database yet. The site is currently showing default showcase projects.</p>
+                    <button
+                      type="button"
+                      onClick={importDefaultTailoredPortfolio}
+                      className="rounded-full bg-[#b8ef3e] text-black px-6 py-2.5 text-xs font-mono font-bold tracking-wider uppercase hover:opacity-90 transition"
+                    >
+                      Import Default Projects to Customize
+                    </button>
+                  </div>
+                )}
 
-                    <div className="grid grid-cols-1 gap-4">
-                      <div>
-                        <label className="block text-[10px] font-mono text-white/40 uppercase mb-1">Client Name</label>
+                {(data.tailoredPortfolio || []).map((proj, pIdx) => {
+                  const projectImages = Array.isArray(proj.images) && proj.images.length > 0
+                    ? proj.images
+                    : (proj.image ? [proj.image] : (proj.logo ? [proj.logo] : []));
+
+                  return (
+                    <div key={proj.id || pIdx} className="rounded-2xl bg-[#0c0e16] p-6 border border-white/10 flex flex-col gap-5">
+                      {/* Header with Title and Delete */}
+                      <div className="flex items-center gap-4">
                         <input
                           type="text"
-                          value={proj.client || ''}
-                          onChange={(e) => updateTailoredPortfolio(pIdx, 'client', e.target.value)}
-                          className="w-full bg-[#171a25] border border-white/10 rounded-lg p-2 text-xs outline-none focus:border-[#b8ef3e]"
+                          value={proj.title || proj.name || ''}
+                          onChange={(e) => {
+                            updateTailoredPortfolio(pIdx, 'title', e.target.value);
+                            updateTailoredPortfolio(pIdx, 'name', e.target.value);
+                          }}
+                          className="font-bold text-xl bg-transparent outline-none border-b border-transparent focus:border-[#b8ef3e] text-white flex-1 text-left"
+                          placeholder="Project Title (e.g. Operations, simplified.)"
                         />
+                        <button
+                          type="button"
+                          onClick={() => deleteTailoredPortfolio(pIdx)}
+                          className="text-[10px] font-mono text-[#ff7059] hover:underline px-2 py-1"
+                        >
+                          DELETE
+                        </button>
                       </div>
-                    </div>
 
-                    <div className="border-t border-white/10 pt-4 flex flex-col gap-3">
-                      <div>
-                        <label className="block text-[10px] font-mono text-white/40 uppercase mb-1">Challenge</label>
-                        <textarea
-                          value={proj.description?.challenge || ''}
-                          onChange={(e) => updateTailoredPortfolio(pIdx, 'description', e.target.value, 'challenge')}
-                          rows={2}
-                          className="w-full bg-[#171a25] border border-white/10 rounded-lg p-2 text-xs outline-none focus:border-[#b8ef3e] resize-none"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-[10px] font-mono text-white/40 uppercase mb-1">Solution</label>
-                        <textarea
-                          value={proj.description?.solution || ''}
-                          onChange={(e) => updateTailoredPortfolio(pIdx, 'description', e.target.value, 'solution')}
-                          rows={2}
-                          className="w-full bg-[#171a25] border border-white/10 rounded-lg p-2 text-xs outline-none focus:border-[#b8ef3e] resize-none"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-[10px] font-mono text-white/40 uppercase mb-1">Impact</label>
-                        <textarea
-                          value={proj.description?.impact || ''}
-                          onChange={(e) => updateTailoredPortfolio(pIdx, 'description', e.target.value, 'impact')}
-                          rows={2}
-                          className="w-full bg-[#171a25] border border-white/10 rounded-lg p-2 text-xs outline-none focus:border-[#b8ef3e] resize-none"
-                        />
-                      </div>
-                    </div>
-                    {/* Media */}
-                    <div className="border-t border-white/10 pt-4 flex flex-col gap-4">
-                      {/* Logo */}
-                      <div className="flex items-center justify-between flex-wrap gap-4">
+                      {/* Category & Color Accent */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                          <span className="block text-[10px] font-mono text-white/40 uppercase">Client Logo</span>
-                          {proj.logo ? (
-                            <div className="flex items-center gap-4 mt-2">
-                              <div className="w-16 h-16 rounded-lg bg-black/50 overflow-hidden flex-shrink-0 border border-white/10 flex items-center justify-center">
-                                <img src={resolveImageUrl(proj.logo)} alt="preview" className="max-w-full max-h-full object-contain" />
-                              </div>
-                              <button
-                                type="button"
-                                onClick={() => updateTailoredPortfolio(pIdx, 'logo', '')}
-                                className="text-[10px] font-mono text-[#ff7059] hover:underline"
-                              >
-                                remove
-                              </button>
-                            </div>
-                          ) : (
-                            <span className="text-[10px] font-mono text-white/30 mt-1 block">No logo uploaded</span>
-                          )}
+                          <label className="block text-[10px] font-mono text-white/40 uppercase mb-1">Category</label>
+                          <select
+                            value={proj.category || 'Software'}
+                            onChange={(e) => updateTailoredPortfolio(pIdx, 'category', e.target.value)}
+                            className="w-full bg-[#171a25] border border-white/10 rounded-lg p-2.5 text-xs outline-none focus:border-[#b8ef3e] text-white"
+                          >
+                            <option value="Software">Software</option>
+                            <option value="Content">Content</option>
+                            <option value="Digital marketing">Digital marketing</option>
+                          </select>
                         </div>
                         <div>
-                          <label className="cursor-pointer inline-flex items-center gap-2 rounded-full border border-white/20 px-3 py-1.5 text-[10px] font-mono font-bold uppercase hover:border-[#b8ef3e] transition">
-                            {uploadingPortfolioIndex === pIdx ? 'UPLOADING...' : 'UPLOAD LOGO ↗'}
-                            <input
-                              type="file"
-                              accept="image/*,video/*"
-                              className="hidden"
-                              disabled={uploadingPortfolioIndex !== null}
-                              onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                if (file) handlePortfolioUpload(file, pIdx, 'logo');
-                              }}
-                            />
-                          </label>
+                          <label className="block text-[10px] font-mono text-white/40 uppercase mb-1">Color Theme</label>
+                          <select
+                            value={proj.color || 'sage'}
+                            onChange={(e) => updateTailoredPortfolio(pIdx, 'color', e.target.value)}
+                            className="w-full bg-[#171a25] border border-white/10 rounded-lg p-2.5 text-xs outline-none focus:border-[#b8ef3e] text-white"
+                          >
+                            <option value="sage">Sage (Green / Mint)</option>
+                            <option value="blue">Blue (Secondary)</option>
+                            <option value="clay">Clay (Warm Terracotta)</option>
+                            <option value="plum">Plum (Deep Plum)</option>
+                          </select>
                         </div>
                       </div>
 
-                      {/* Images */}
-                      <div className="border-t border-white/5 pt-4">
-                        <div className="flex items-center justify-between flex-wrap gap-4 mb-3">
-                          <span className="block text-[10px] font-mono text-white/40 uppercase">Project Images ({(proj.images || []).length})</span>
+                      {/* Discipline & Scope Tags */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-[10px] font-mono text-white/40 uppercase mb-1">Discipline / Subtitle</label>
+                          <input
+                            type="text"
+                            value={proj.discipline || proj.client || ''}
+                            onChange={(e) => {
+                              updateTailoredPortfolio(pIdx, 'discipline', e.target.value);
+                              updateTailoredPortfolio(pIdx, 'client', e.target.value);
+                            }}
+                            placeholder="e.g. Custom platform · UI/UX · Development"
+                            className="w-full bg-[#171a25] border border-white/10 rounded-lg p-2.5 text-xs outline-none focus:border-[#b8ef3e] text-white"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-mono text-white/40 uppercase mb-1">Scope / Deliverables (comma separated)</label>
+                          <input
+                            type="text"
+                            value={Array.isArray(proj.scope) ? proj.scope.join(', ') : (proj.scope || '')}
+                            onChange={(e) => {
+                              const scopeArr = e.target.value.split(',').map((s) => s.trim()).filter(Boolean);
+                              updateTailoredPortfolio(pIdx, 'scope', scopeArr);
+                            }}
+                            placeholder="e.g. Product strategy, Interface design, Development"
+                            className="w-full bg-[#171a25] border border-white/10 rounded-lg p-2.5 text-xs outline-none focus:border-[#b8ef3e] text-white"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Short Description */}
+                      <div>
+                        <div className="flex items-center justify-between mb-1">
+                          <label className="block text-[10px] font-mono text-white/40 uppercase">Short Description</label>
+                          <span className="text-[10px] font-mono text-white/30">Shown on card preview & modal lead</span>
+                        </div>
+                        <textarea
+                          value={proj.shortDescription || proj.short_description || ''}
+                          onChange={(e) => {
+                            updateTailoredPortfolio(pIdx, 'shortDescription', e.target.value);
+                            updateTailoredPortfolio(pIdx, 'short_description', e.target.value);
+                          }}
+                          placeholder="1-2 punchy sentences summarizing the project..."
+                          rows={2}
+                          className="w-full bg-[#171a25] border border-white/10 rounded-lg p-2.5 text-xs outline-none focus:border-[#b8ef3e] text-white resize-none"
+                        />
+                      </div>
+
+                      {/* Full Description */}
+                      <div>
+                        <div className="flex items-center justify-between mb-1">
+                          <label className="block text-[10px] font-mono text-white/40 uppercase">Detailed Description</label>
+                          <span className="text-[10px] font-mono text-white/30">Full narrative shown inside modal</span>
+                        </div>
+                        <textarea
+                          value={typeof proj.description === 'string' ? proj.description : [proj.description?.challenge, proj.description?.solution, proj.description?.impact].filter(Boolean).join('\n\n')}
+                          onChange={(e) => updateTailoredPortfolio(pIdx, 'description', e.target.value)}
+                          placeholder="Detailed challenge, architecture, and deliverables..."
+                          rows={3}
+                          className="w-full bg-[#171a25] border border-white/10 rounded-lg p-2.5 text-xs outline-none focus:border-[#b8ef3e] text-white resize-none"
+                        />
+                      </div>
+
+                      {/* Multiple Images Management */}
+                      <div className="border-t border-white/10 pt-4 flex flex-col gap-3">
+                        <div className="flex items-center justify-between flex-wrap gap-4">
+                          <div>
+                            <span className="block text-[10px] font-mono text-white/40 uppercase">
+                              Project Images ({projectImages.length})
+                            </span>
+                            <span className="text-[10px] text-white/40">First image is automatically used as the card cover</span>
+                          </div>
                           <label className="cursor-pointer inline-flex items-center gap-2 rounded-full border border-white/20 px-3 py-1.5 text-[10px] font-mono font-bold uppercase hover:border-[#b8ef3e] transition">
                             {uploadingPortfolioIndex === pIdx ? 'UPLOADING...' : 'UPLOAD IMAGE ↗'}
                             <input
                               type="file"
-                              accept="image/*,video/*"
+                              accept="image/*"
                               className="hidden"
                               disabled={uploadingPortfolioIndex !== null}
                               onChange={(e) => {
@@ -974,36 +1032,113 @@ export default function AdminPage() {
                             />
                           </label>
                         </div>
-                        {proj.images && proj.images.length > 0 && (
-                          <div className="flex flex-col gap-2">
-                            {proj.images.map((img: string, imgIdx: number) => (
-                              <div key={imgIdx} className="flex items-center gap-4 bg-white/5 p-2 rounded-xl border border-white/10">
-                                <div className="w-16 h-16 rounded-lg bg-black/50 overflow-hidden flex-shrink-0 border border-white/10 flex items-center justify-center">
-                                  <img src={resolveImageUrl(img)} alt="preview" className="max-w-full max-h-full object-contain" />
+
+                        {/* Add image URL directly */}
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="text"
+                            id={`add-img-url-${pIdx}`}
+                            placeholder="Or paste image URL (e.g. /placeholder.svg?height=880&width=1250 or https://...)"
+                            className="flex-1 bg-[#171a25] border border-white/10 rounded-lg p-2 text-xs outline-none focus:border-[#b8ef3e] text-white"
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') {
+                                const input = e.currentTarget;
+                                const val = input.value.trim();
+                                if (val) {
+                                  const updated = [...projectImages, val];
+                                  updateTailoredPortfolio(pIdx, 'images', updated);
+                                  updateTailoredPortfolio(pIdx, 'image', updated[0]);
+                                  input.value = '';
+                                }
+                              }
+                            }}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const input = document.getElementById(`add-img-url-${pIdx}`) as HTMLInputElement;
+                              if (input && input.value.trim()) {
+                                const val = input.value.trim();
+                                const updated = [...projectImages, val];
+                                updateTailoredPortfolio(pIdx, 'images', updated);
+                                updateTailoredPortfolio(pIdx, 'image', updated[0]);
+                                input.value = '';
+                              }
+                            }}
+                            className="rounded-lg bg-white/10 px-3 py-2 text-xs font-mono text-white hover:bg-white/20 transition"
+                          >
+                            + ADD URL
+                          </button>
+                        </div>
+
+                        {/* Images Grid */}
+                        {projectImages.length > 0 && (
+                          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 mt-1">
+                            {projectImages.map((img: string, imgIdx: number) => (
+                              <div key={imgIdx} className="relative group rounded-xl border border-white/10 bg-white/5 overflow-hidden aspect-[4/3] flex items-center justify-center">
+                                <img src={resolveImageUrl(img)} alt={`preview ${imgIdx}`} className="size-full object-cover" />
+                                {imgIdx === 0 && (
+                                  <span className="absolute top-1.5 left-1.5 bg-[#b8ef3e] text-black font-mono text-[9px] font-bold px-1.5 py-0.5 rounded shadow">
+                                    COVER
+                                  </span>
+                                )}
+                                <div className="absolute inset-0 bg-black/75 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1.5 p-2">
+                                  {imgIdx > 0 && (
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        const newImgs = [...projectImages];
+                                        const [moved] = newImgs.splice(imgIdx, 1);
+                                        newImgs.unshift(moved);
+                                        updateTailoredPortfolio(pIdx, 'images', newImgs);
+                                        updateTailoredPortfolio(pIdx, 'image', moved);
+                                      }}
+                                      className="text-[9px] font-mono bg-white/20 hover:bg-[#b8ef3e] hover:text-black text-white px-2 py-1 rounded transition w-full"
+                                    >
+                                      MAKE COVER
+                                    </button>
+                                  )}
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      const newImgs = [...projectImages];
+                                      newImgs.splice(imgIdx, 1);
+                                      updateTailoredPortfolio(pIdx, 'images', newImgs);
+                                      updateTailoredPortfolio(pIdx, 'image', newImgs[0] || '');
+                                    }}
+                                    className="text-[9px] font-mono bg-[#ff7059]/20 hover:bg-[#ff7059] text-[#ff7059] hover:text-white px-2 py-1 rounded transition w-full"
+                                  >
+                                    REMOVE
+                                  </button>
                                 </div>
-                                <div className="flex-1"></div>
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    const newImages = [...proj.images];
-                                    newImages.splice(imgIdx, 1);
-                                    updateTailoredPortfolio(pIdx, 'images', newImages);
-                                  }}
-                                  className="text-[10px] font-mono text-[#ff7059] hover:underline"
-                                >
-                                  remove
-                                </button>
                               </div>
                             ))}
                           </div>
                         )}
                       </div>
                     </div>
-                  </div>
-                ))}
-                <button type="button" onClick={addTailoredPortfolio} className="mt-2 w-full rounded-xl border border-dashed border-white/20 p-4 text-xs font-mono font-bold text-white/40 hover:border-[#b8ef3e] hover:text-[#b8ef3e] transition">
-                  + ADD NEW PROJECT
-                </button>
+                  );
+                })}
+
+                <div className="flex items-center gap-3 mt-2">
+                  <button
+                    type="button"
+                    onClick={addTailoredPortfolio}
+                    className="flex-1 rounded-xl border border-dashed border-white/20 p-4 text-xs font-mono font-bold text-white/50 hover:border-[#b8ef3e] hover:text-[#b8ef3e] transition"
+                  >
+                    + ADD NEW PROJECT
+                  </button>
+                  {(data.tailoredPortfolio || []).length > 0 && (
+                    <button
+                      type="button"
+                      onClick={importDefaultTailoredPortfolio}
+                      title="Reset / re-import the 4 standard projects"
+                      className="rounded-xl border border-white/10 bg-white/5 px-4 py-4 text-xs font-mono text-white/40 hover:text-white hover:bg-white/10 transition"
+                    >
+                      RE-IMPORT DEFAULTS
+                    </button>
+                  )}
+                </div>
               </div>
             )}
 

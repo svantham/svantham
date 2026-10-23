@@ -4,15 +4,30 @@ export const contact = {
   whatsapp: 'https://wa.me/917845299722?text=Hi%20Tailored!%20I%27d%20love%20to%20discuss%20a%20project.',
 }
 
-export const projects = [
+export interface Project {
+  id: string;
+  title: string;
+  category: 'Software' | 'Content' | 'Digital marketing' | string;
+  discipline: string;
+  color: 'sage' | 'blue' | 'clay' | 'plum';
+  images: string[];
+  image: string;
+  shortDescription: string;
+  description: string;
+  scope: string[];
+}
+
+export const projects: Project[] = [
   {
     id: 'custom-platform',
     title: 'Operations, simplified.',
     category: 'Software',
     discipline: 'Custom platform · UI/UX · Development',
     color: 'sage',
+    images: ['/placeholder.svg?height=880&width=1250'],
     image: '/placeholder.svg?height=880&width=1250',
-    description: 'A space to showcase a custom platform built around a client’s day-to-day operations. Replace this sample with the client name, the challenge, and what your team delivered.',
+    shortDescription: 'Unified internal operations platform replacing fragmented spreadsheets with real-time tracking.',
+    description: 'A purpose-built operational platform designed around daily workflows. Unifies inventory control, customer accounts, and real-time operational reporting into a single web workspace.',
     scope: ['Product strategy', 'Interface design', 'Full-stack development'],
   },
   {
@@ -21,8 +36,10 @@ export const projects = [
     category: 'Content',
     discipline: 'Brand storytelling · Content production',
     color: 'blue',
+    images: ['/placeholder.svg?height=880&width=1250'],
     image: '/placeholder.svg?height=880&width=1250',
-    description: 'A space for a client’s content and brand storytelling project. Add the real brief, the creative direction, and a selection of the content you produced.',
+    shortDescription: 'Strategic brand voice guidelines, visual storytelling, and multi-channel creative assets.',
+    description: 'Crafted a distinct brand voice and accompanying visual narrative across web, editorial publications, and social media, establishing memorable positioning and customer affinity.',
     scope: ['Content strategy', 'Brand voice', 'Creative production'],
   },
   {
@@ -31,8 +48,10 @@ export const projects = [
     category: 'Software',
     discipline: 'Website · Experience design · Development',
     color: 'clay',
+    images: ['/placeholder.svg?height=880&width=1250'],
     image: '/placeholder.svg?height=880&width=1250',
-    description: 'A space for a website or digital product your team brought to life. Replace this sample with project imagery, the client’s requirements, and the finished experience.',
+    shortDescription: 'High-performance digital products engineered for conversion, responsiveness, and speed.',
+    description: 'End-to-end digital experience crafted with obsessive attention to detail, responsive typography, intuitive user flows, and sub-second page transition speeds.',
     scope: ['UX research', 'Web design', 'Responsive development'],
   },
   {
@@ -41,13 +60,13 @@ export const projects = [
     category: 'Digital marketing',
     discipline: 'Campaign strategy · Social · Digital marketing',
     color: 'plum',
+    images: ['/placeholder.svg?height=880&width=1250'],
     image: '/placeholder.svg?height=880&width=1250',
-    description: 'A space for a digital marketing campaign. Add the audience, channel strategy, campaign creative, and verified results from an actual client engagement.',
+    shortDescription: 'Targeted acquisition strategy delivering qualified leads and sustainable efficiency.',
+    description: 'Designed and deployed targeted audience acquisition campaigns across search and social channels, combining creative storytelling with continuous conversion optimization.',
     scope: ['Audience strategy', 'Campaign creative', 'Performance marketing'],
   },
-] as const
-
-export type Project = (typeof projects)[number]
+]
 
 export const testimonials = [
   {

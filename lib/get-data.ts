@@ -14,6 +14,24 @@ export interface DeploymentCardItem {
   description: string;
 }
 
+export interface TailoredProjectItem {
+  id: string;
+  title: string;
+  name?: string;
+  category: 'Software' | 'Content' | 'Digital marketing' | string;
+  discipline: string;
+  client?: string;
+  color: 'sage' | 'blue' | 'clay' | 'plum' | string;
+  shortDescription?: string;
+  short_description?: string;
+  description?: string | { challenge?: string; solution?: string; impact?: string };
+  images: string[];
+  image?: string;
+  logo?: string;
+  scope?: string[];
+  [key: string]: any;
+}
+
 export interface ProductData {
   hero_eyebrow?: string;
   hero_title_1?: string;
@@ -41,7 +59,7 @@ export interface SvanthamData {
   modules: ModuleItem[];
   deploymentCards: DeploymentCardItem[];
   ticker: string[];
-  tailoredPortfolio?: any[];
+  tailoredPortfolio?: TailoredProjectItem[];
   products: Record<string, ProductData>;
   [key: string]: any;
 }
@@ -53,16 +71,15 @@ export async function getSvanthamData(): Promise<SvanthamData> {
     const data = typeof raw === 'string' ? JSON.parse(raw) : raw;
 
     return {
-      content: { ...(data.content || {}) },
-      modules: data.modules || [],
-      deploymentCards: data.deploymentCards || [],
-      ticker: data.ticker || [],
-      tailoredPortfolio: data.tailoredPortfolio || [],
-      products: { ...(data.products || {}) },
+      content: { ...(data?.content || {}) },
+      modules: data?.modules || [],
+      deploymentCards: data?.deploymentCards || [],
+      ticker: data?.ticker || [],
+      tailoredPortfolio: data?.tailoredPortfolio || [],
+      products: { ...(data?.products || {}) },
     };
   } catch (err) {
     console.warn('Failed to read from Upstash Redis', err);
     return {} as SvanthamData;
   }
 }
-
