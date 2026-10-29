@@ -1,12 +1,18 @@
 'use client';
 
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
 import type { SvanthamData, ModuleItem, DeploymentCardItem, TailoredProjectItem } from '@/lib/get-data';
 
 export default function AdminPage() {
   const [data, setData] = useState<SvanthamData | null>(null);
   const [status, setStatus] = useState('');
   const [search, setSearch] = useState('');
+  const [editingKey, setEditingKey] = useState<string | null>(null);
+  const searchResultsRef = useRef<{ query: string; page: string; keys: string[] }>({
+    query: '\0',
+    page: '',
+    keys: [],
+  });
   const [activePage, setActivePage] = useState<string>('home');
   const [activeTab, setActiveTab] = useState<string>('modules');
 
@@ -281,19 +287,44 @@ export default function AdminPage() {
     // Exclude arrays from flat dictionary
     keys = keys.filter(k => !Array.isArray(sourceData[k]));
 
-    if (search.trim()) {
-      const q = search.toLowerCase();
-      return keys.filter((k) => {
-        const val = String(sourceData[k] || '');
-        return (
-          k.toLowerCase().includes(q) ||
-          val.toLowerCase().includes(q)
-        );
-      });
+    const trimmedSearch = search.trim();
+    if (!trimmedSearch) {
+      searchResultsRef.current = { query: '', page: activePage, keys: [] };
+      return [];
     }
 
-    return [];
-  }, [data, search, activePage]);
+    const q = trimmedSearch.toLowerCase();
+    const isNewQuery =
+      searchResultsRef.current.query !== trimmedSearch ||
+      searchResultsRef.current.page !== activePage;
+
+    if (isNewQuery) {
+      const matched = keys.filter((k) => {
+        if (editingKey && k === editingKey) return true;
+        const val = String(sourceData[k] || '');
+        return k.toLowerCase().includes(q) || val.toLowerCase().includes(q);
+      });
+      searchResultsRef.current = {
+        query: trimmedSearch,
+        page: activePage,
+        keys: matched,
+      };
+      return matched;
+    }
+
+    // When query and page haven't changed (e.g. data or editingKey changed while editing),
+    // retain previously matched keys so values being edited don't disappear when the search keyword is removed.
+    const prevKeys = searchResultsRef.current.keys;
+    const currentKeys = keys.filter((k) => {
+      if (prevKeys.includes(k)) return true;
+      if (editingKey && k === editingKey) return true;
+      const val = String(sourceData[k] || '');
+      return k.toLowerCase().includes(q) || val.toLowerCase().includes(q);
+    });
+
+    searchResultsRef.current.keys = currentKeys;
+    return currentKeys;
+  }, [data, search, activePage, editingKey]);
 
   // Modules helpers
   const updateModule = (index: number, key: keyof ModuleItem, value: any) => {
@@ -563,13 +594,25 @@ export default function AdminPage() {
 
 
             {/* Search Input */}
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search keys or text..."
-              className="w-full border-b border-white/20 bg-transparent py-3 text-sm outline-none transition placeholder:text-white/30 focus:border-[#b8ef3e] mb-8"
-            />
+            <div className="relative mb-8">
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search keys or text..."
+                className="w-full border-b border-white/20 bg-transparent py-3 pr-8 text-sm outline-none transition placeholder:text-white/30 focus:border-[#b8ef3e]"
+              />
+              {search && (
+                <button
+                  type="button"
+                  onClick={() => setSearch('')}
+                  className="absolute right-0 top-1/2 -translate-y-1/2 p-2 text-white/40 hover:text-white text-xs font-mono transition"
+                  title="Clear search"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
 
             {/* Dictionary List */}
             <div className="flex flex-col gap-6">
@@ -615,7 +658,12 @@ export default function AdminPage() {
                     ) : isLong ? (
                       <textarea
                         value={val}
-                        onChange={(e) => updateContent(key, e.target.value)}
+                        onFocus={() => setEditingKey(key)}
+                        onBlur={() => setEditingKey(null)}
+                        onChange={(e) => {
+                          setEditingKey(key);
+                          updateContent(key, e.target.value);
+                        }}
                         rows={3}
                         className="w-full resize-y rounded-xl border border-white/15 bg-[#171a25] p-3 text-sm outline-none transition focus:border-[#b8ef3e]"
                       />
@@ -623,7 +671,12 @@ export default function AdminPage() {
                       <input
                         type="text"
                         value={val}
-                        onChange={(e) => updateContent(key, e.target.value)}
+                        onFocus={() => setEditingKey(key)}
+                        onBlur={() => setEditingKey(null)}
+                        onChange={(e) => {
+                          setEditingKey(key);
+                          updateContent(key, e.target.value);
+                        }}
                         className="w-full border-b border-white/20 bg-transparent py-2 text-sm outline-none transition focus:border-[#b8ef3e]"
                       />
                     )}
