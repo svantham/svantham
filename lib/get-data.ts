@@ -19,16 +19,11 @@ export interface TailoredProjectItem {
   title: string;
   name?: string;
   category: 'Software' | 'Content' | 'Digital marketing' | string;
-  discipline: string;
-  client?: string;
-  color: 'sage' | 'blue' | 'clay' | 'plum' | string;
   shortDescription?: string;
   short_description?: string;
-  description?: string | { challenge?: string; solution?: string; impact?: string };
   images: string[];
   image?: string;
-  logo?: string;
-  scope?: string[];
+  scope?: string[] | string;
   [key: string]: any;
 }
 

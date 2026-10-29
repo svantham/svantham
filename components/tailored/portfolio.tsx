@@ -1,19 +1,13 @@
 'use client'
 
 import { useContent, useData } from '@/components/data-provider'
-import { ArrowUpRight, ChevronLeft, ChevronRight, ImageIcon } from 'lucide-react'
+import { ChevronLeft, ChevronRight, ImageIcon } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { ToggleGroup, ToggleGroupItem } from '@/components/tailored/ui/toggle-group'
-import { contact, projects as defaultProjects, type Project } from '@/lib/site-content'
+import { contact, type Project } from '@/lib/site-content'
 import { cn } from '@/lib/utils'
 
 const filters = ['All work', 'Software', 'Content', 'Digital marketing']
-const colorClasses: Record<string, string> = {
-  sage: 'bg-sage text-background',
-  blue: 'bg-secondary text-secondary-foreground',
-  clay: 'bg-clay text-background',
-  plum: 'bg-plum text-primary',
-}
 
 function ProjectSlideshow({ project }: { project: Project }) {
   const images = (project.images && project.images.length > 0)
@@ -21,7 +15,6 @@ function ProjectSlideshow({ project }: { project: Project }) {
     : [project.image || '/placeholder.svg?height=880&width=1250']
   const [currentIdx, setCurrentIdx] = useState(0)
   const [isHovered, setIsHovered] = useState(false)
-  const colorClass = colorClasses[project.color] || colorClasses.sage
 
   // Automated slideshow: cycles every 3.8s when not hovered
   useEffect(() => {
@@ -37,7 +30,7 @@ function ProjectSlideshow({ project }: { project: Project }) {
 
   return (
     <div
-      className={cn('work-image relative overflow-hidden rounded-2xl group/slide select-none', colorClass)}
+      className="work-image relative overflow-hidden rounded-2xl group/slide select-none bg-secondary/40 text-foreground"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -147,23 +140,20 @@ function ProjectCard({ project }: { project: Project }) {
           <span className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
             {project.category}
           </span>
-          <span className="text-xs text-muted-foreground truncate max-w-[55%] text-right">
-            {project.discipline}
-          </span>
         </div>
 
         <h3 className="text-xl font-medium tracking-tight md:text-2xl">
           {project.title}
         </h3>
 
-        {(project.shortDescription || project.description) && (
+        {project.shortDescription && (
           <p className="text-sm leading-relaxed text-muted-foreground">
-            {project.shortDescription || project.description}
+            {project.shortDescription}
           </p>
         )}
 
         {project.scope && project.scope.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 pt-2">
+          <div className="flex flex-wrap gap-1.5 pt-1">
             {project.scope.map((item) => (
               <span
                 key={item}
@@ -182,11 +172,8 @@ function ProjectCard({ project }: { project: Project }) {
 export function Portfolio() {
   const [filter, setFilter] = useState('All work')
   const data = useData()
-  const colors: ('sage' | 'blue' | 'clay' | 'plum')[] = ['sage', 'blue', 'clay', 'plum']
 
-  const rawList = (data.tailoredPortfolio && data.tailoredPortfolio.length > 0)
-    ? data.tailoredPortfolio
-    : defaultProjects
+  const rawList = data.tailoredPortfolio || []
 
   const mappedProjects: Project[] = rawList.map((proj: any, idx: number) => {
     const images: string[] = (Array.isArray(proj.images) && proj.images.length > 0)
@@ -195,14 +182,7 @@ export function Portfolio() {
 
     const primaryImage = images[0] || proj.image || '/placeholder.svg?height=880&width=1250'
 
-    let fullDesc = ''
-    if (typeof proj.description === 'string') {
-      fullDesc = proj.description
-    } else if (proj.description && typeof proj.description === 'object') {
-      fullDesc = [proj.description.challenge, proj.description.solution, proj.description.impact].filter(Boolean).join(' ')
-    }
-
-    const shortDesc = proj.shortDescription || proj.short_description || ''
+    const shortDesc = proj.shortDescription || proj.short_description || proj.description || ''
 
     let category = proj.category || 'Software'
     if (category.toLowerCase() === 'software') category = 'Software'
@@ -219,12 +199,9 @@ export function Portfolio() {
       id: proj.id || `proj-${idx}`,
       title: proj.title || proj.name || 'Untitled project',
       category,
-      discipline: proj.discipline || proj.client || category,
-      color: (proj.color && colorClasses[proj.color]) ? proj.color : colors[idx % colors.length],
       images,
       image: primaryImage,
-      shortDescription: shortDesc,
-      description: fullDesc || shortDesc,
+      shortDescription: typeof shortDesc === 'string' ? shortDesc : '',
       scope,
     }
   })

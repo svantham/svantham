@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState, useMemo } from 'react';
 import type { SvanthamData, ModuleItem, DeploymentCardItem, TailoredProjectItem } from '@/lib/get-data';
-import { projects as defaultProjects } from '@/lib/site-content';
 
 export default function AdminPage() {
   const [data, setData] = useState<SvanthamData | null>(null);
@@ -70,17 +69,30 @@ export default function AdminPage() {
     if (!data) return;
     setStatus('SAVING...');
     try {
+      const dataToSave = {
+        ...data,
+        tailoredPortfolio: (data.tailoredPortfolio || []).map((proj) => ({
+          ...proj,
+          scope: Array.isArray(proj.scope)
+            ? proj.scope
+            : (typeof proj.scope === 'string'
+              ? proj.scope.split(',').map((s: string) => s.trim()).filter(Boolean)
+              : []),
+        })),
+      };
+
       const res = await fetch('/api/save-all', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${pin}`,
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(dataToSave),
       });
 
       if (res.ok) {
         setStatus('SAVED SUCCESSFULLY ✓');
+        setData(dataToSave);
       } else {
         setStatus('ERROR SAVING ✕');
       }
@@ -182,22 +194,12 @@ export default function AdminPage() {
         title: 'New Project',
         name: 'New Project',
         category: 'Software',
-        discipline: 'Custom platform · UI/UX · Development',
-        color: 'sage',
         shortDescription: 'Short project summary for card preview.',
-        description: 'Detailed description of the project challenge, approach, and outcomes.',
         images: ['/placeholder.svg?height=880&width=1250'],
         image: '/placeholder.svg?height=880&width=1250',
         scope: ['Product strategy', 'Interface design', 'Full-stack development'],
       };
       return { ...prev, tailoredPortfolio: [...(prev.tailoredPortfolio || []), newProj] };
-    });
-  };
-
-  const importDefaultTailoredPortfolio = () => {
-    setData((prev) => {
-      if (!prev) return prev;
-      return { ...prev, tailoredPortfolio: [...defaultProjects] };
     });
   };
 
@@ -876,19 +878,6 @@ export default function AdminPage() {
             {/* TAB: PORTFOLIO */}
             {activeTab === 'portfolio' && (
               <div className="flex flex-col gap-6">
-                {(data.tailoredPortfolio || []).length === 0 && (
-                  <div className="rounded-2xl bg-[#0c0e16] p-8 border border-white/10 text-center flex flex-col items-center gap-4">
-                    <p className="text-sm text-white/60">No customized projects in database yet. The site is currently showing default showcase projects.</p>
-                    <button
-                      type="button"
-                      onClick={importDefaultTailoredPortfolio}
-                      className="rounded-full bg-[#b8ef3e] text-black px-6 py-2.5 text-xs font-mono font-bold tracking-wider uppercase hover:opacity-90 transition"
-                    >
-                      Import Default Projects to Customize
-                    </button>
-                  </div>
-                )}
-
                 {(data.tailoredPortfolio || []).map((proj, pIdx) => {
                   const projectImages = Array.isArray(proj.images) && proj.images.length > 0
                     ? proj.images
@@ -917,7 +906,7 @@ export default function AdminPage() {
                         </button>
                       </div>
 
-                      {/* Category & Color Accent */}
+                      {/* Category & Scope Tags */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                           <label className="block text-[10px] font-mono text-white/40 uppercase mb-1">Category</label>
@@ -932,79 +921,46 @@ export default function AdminPage() {
                           </select>
                         </div>
                         <div>
-                          <label className="block text-[10px] font-mono text-white/40 uppercase mb-1">Color Theme</label>
-                          <select
-                            value={proj.color || 'sage'}
-                            onChange={(e) => updateTailoredPortfolio(pIdx, 'color', e.target.value)}
-                            className="w-full bg-[#171a25] border border-white/10 rounded-lg p-2.5 text-xs outline-none focus:border-[#b8ef3e] text-white"
-                          >
-                            <option value="sage">Sage (Green / Mint)</option>
-                            <option value="blue">Blue (Secondary)</option>
-                            <option value="clay">Clay (Warm Terracotta)</option>
-                            <option value="plum">Plum (Deep Plum)</option>
-                          </select>
-                        </div>
-                      </div>
-
-                      {/* Discipline & Scope Tags */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-[10px] font-mono text-white/40 uppercase mb-1">Discipline / Subtitle</label>
-                          <input
-                            type="text"
-                            value={proj.discipline || proj.client || ''}
-                            onChange={(e) => {
-                              updateTailoredPortfolio(pIdx, 'discipline', e.target.value);
-                              updateTailoredPortfolio(pIdx, 'client', e.target.value);
-                            }}
-                            placeholder="e.g. Custom platform · UI/UX · Development"
-                            className="w-full bg-[#171a25] border border-white/10 rounded-lg p-2.5 text-xs outline-none focus:border-[#b8ef3e] text-white"
-                          />
-                        </div>
-                        <div>
                           <label className="block text-[10px] font-mono text-white/40 uppercase mb-1">Scope / Deliverables (comma separated)</label>
                           <input
                             type="text"
-                            value={Array.isArray(proj.scope) ? proj.scope.join(', ') : (proj.scope || '')}
+                            value={Array.isArray(proj.scope) ? proj.scope.join(', ') : (proj.scope ?? '')}
                             onChange={(e) => {
+                              updateTailoredPortfolio(pIdx, 'scope', e.target.value);
+                            }}
+                            onBlur={(e) => {
                               const scopeArr = e.target.value.split(',').map((s) => s.trim()).filter(Boolean);
                               updateTailoredPortfolio(pIdx, 'scope', scopeArr);
                             }}
                             placeholder="e.g. Product strategy, Interface design, Development"
                             className="w-full bg-[#171a25] border border-white/10 rounded-lg p-2.5 text-xs outline-none focus:border-[#b8ef3e] text-white"
                           />
+                          {((Array.isArray(proj.scope) ? proj.scope : (proj.scope || '').split(',').map((s: string) => s.trim()).filter(Boolean))).length > 0 && (
+                            <div className="flex flex-wrap gap-1 mt-1.5">
+                              {(Array.isArray(proj.scope) ? proj.scope : (proj.scope || '').split(',').map((s: string) => s.trim()).filter(Boolean)).map((tag: string, tIdx: number) => (
+                                <span key={tIdx} className="bg-white/10 text-white/80 text-[10px] font-mono px-2 py-0.5 rounded-full">
+                                  {tag}
+                                </span>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       </div>
 
-                      {/* Short Description */}
+                      {/* Description */}
                       <div>
                         <div className="flex items-center justify-between mb-1">
-                          <label className="block text-[10px] font-mono text-white/40 uppercase">Short Description</label>
-                          <span className="text-[10px] font-mono text-white/30">Shown on card preview & modal lead</span>
+                          <label className="block text-[10px] font-mono text-white/40 uppercase">Description</label>
+                          <span className="text-[10px] font-mono text-white/30">Shown directly on project card</span>
                         </div>
                         <textarea
-                          value={proj.shortDescription || proj.short_description || ''}
+                          value={proj.shortDescription || proj.short_description || (typeof proj.description === 'string' ? proj.description : '') || ''}
                           onChange={(e) => {
                             updateTailoredPortfolio(pIdx, 'shortDescription', e.target.value);
                             updateTailoredPortfolio(pIdx, 'short_description', e.target.value);
                           }}
-                          placeholder="1-2 punchy sentences summarizing the project..."
+                          placeholder="Summary of the project..."
                           rows={2}
-                          className="w-full bg-[#171a25] border border-white/10 rounded-lg p-2.5 text-xs outline-none focus:border-[#b8ef3e] text-white resize-none"
-                        />
-                      </div>
-
-                      {/* Full Description */}
-                      <div>
-                        <div className="flex items-center justify-between mb-1">
-                          <label className="block text-[10px] font-mono text-white/40 uppercase">Detailed Description</label>
-                          <span className="text-[10px] font-mono text-white/30">Full narrative shown inside modal</span>
-                        </div>
-                        <textarea
-                          value={typeof proj.description === 'string' ? proj.description : [proj.description?.challenge, proj.description?.solution, proj.description?.impact].filter(Boolean).join('\n\n')}
-                          onChange={(e) => updateTailoredPortfolio(pIdx, 'description', e.target.value)}
-                          placeholder="Detailed challenge, architecture, and deliverables..."
-                          rows={3}
                           className="w-full bg-[#171a25] border border-white/10 rounded-lg p-2.5 text-xs outline-none focus:border-[#b8ef3e] text-white resize-none"
                         />
                       </div>
@@ -1120,24 +1076,14 @@ export default function AdminPage() {
                   );
                 })}
 
-                <div className="flex items-center gap-3 mt-2">
+                <div className="mt-2">
                   <button
                     type="button"
                     onClick={addTailoredPortfolio}
-                    className="flex-1 rounded-xl border border-dashed border-white/20 p-4 text-xs font-mono font-bold text-white/50 hover:border-[#b8ef3e] hover:text-[#b8ef3e] transition"
+                    className="w-full rounded-xl border border-dashed border-white/20 p-4 text-xs font-mono font-bold text-white/50 hover:border-[#b8ef3e] hover:text-[#b8ef3e] transition"
                   >
                     + ADD NEW PROJECT
                   </button>
-                  {(data.tailoredPortfolio || []).length > 0 && (
-                    <button
-                      type="button"
-                      onClick={importDefaultTailoredPortfolio}
-                      title="Reset / re-import the 4 standard projects"
-                      className="rounded-xl border border-white/10 bg-white/5 px-4 py-4 text-xs font-mono text-white/40 hover:text-white hover:bg-white/10 transition"
-                    >
-                      RE-IMPORT DEFAULTS
-                    </button>
-                  )}
                 </div>
               </div>
             )}
