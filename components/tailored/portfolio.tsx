@@ -2,8 +2,7 @@
 
 import { useContent, useData } from '@/components/data-provider'
 import { ArrowUpRight, ChevronLeft, ChevronRight, ImageIcon } from 'lucide-react'
-import { useState } from 'react'
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/tailored/ui/dialog'
+import { useState, useEffect } from 'react'
 import { ToggleGroup, ToggleGroupItem } from '@/components/tailored/ui/toggle-group'
 import { contact, projects as defaultProjects, type Project } from '@/lib/site-content'
 import { cn } from '@/lib/utils'
@@ -16,26 +15,60 @@ const colorClasses: Record<string, string> = {
   plum: 'bg-plum text-primary',
 }
 
-function ProjectImage({ project }: { project: Project }) {
-  const images = project.images && project.images.length > 0 ? project.images : [project.image]
-  const cover = images[0] || project.image || '/placeholder.svg?height=880&width=1250'
-  const isPlaceholder = cover.startsWith('/placeholder.svg')
+function ProjectSlideshow({ project }: { project: Project }) {
+  const images = (project.images && project.images.length > 0)
+    ? project.images
+    : [project.image || '/placeholder.svg?height=880&width=1250']
+  const [currentIdx, setCurrentIdx] = useState(0)
+  const [isHovered, setIsHovered] = useState(false)
   const colorClass = colorClasses[project.color] || colorClasses.sage
 
+  // Automated slideshow: cycles every 3.8s when not hovered
+  useEffect(() => {
+    if (images.length <= 1 || isHovered) return
+    const timer = setInterval(() => {
+      setCurrentIdx((prev) => (prev + 1) % images.length)
+    }, 3800)
+    return () => clearInterval(timer)
+  }, [images.length, isHovered])
+
+  const currentImg = images[currentIdx] || images[0]
+  const isPlaceholder = currentImg.startsWith('/placeholder.svg')
+
   return (
-    <div data-placeholder={isPlaceholder} className={cn('work-image relative overflow-hidden rounded-xl', colorClass)}>
-      <img src={cover} alt={isPlaceholder ? '' : project.title} width={1250} height={880} loading="lazy" className="absolute inset-0 size-full object-cover" />
+    <div
+      className={cn('work-image relative overflow-hidden rounded-2xl group/slide select-none', colorClass)}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* Slides crossfade */}
+      {images.map((img, idx) => {
+        const active = idx === currentIdx
+        return (
+          <img
+            key={`${img}-${idx}`}
+            src={img}
+            alt={`${project.title} - slide ${idx + 1}`}
+            width={1250}
+            height={880}
+            loading={idx === 0 ? 'eager' : 'lazy'}
+            className={cn(
+              'absolute inset-0 size-full object-cover transition-opacity duration-700 ease-in-out',
+              active ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
+            )}
+          />
+        )
+      })}
+
+      {/* Placeholder illustration fallback if SVG placeholder */}
       {isPlaceholder && (
-        <div className="absolute inset-6 flex flex-col justify-between md:inset-8">
+        <div className="absolute inset-6 flex flex-col justify-between md:inset-8 z-20 pointer-events-none">
           <div className="flex items-start justify-between gap-4">
-            <span className="text-sm tracking-[0.12em] uppercase">{project.category}</span>
-            <span className="project-arrow flex size-10 items-center justify-center rounded-full border border-current/30">
-              <ArrowUpRight className="size-5" aria-hidden="true" />
-            </span>
+            <span className="text-sm tracking-[0.12em] uppercase font-medium">{project.category}</span>
           </div>
           <div className="flex flex-col items-center gap-3 text-center">
             <ImageIcon className="size-8 opacity-50" strokeWidth={1} aria-hidden="true" />
-            <span className="text-sm tracking-[0.15em] uppercase">{project.title}</span>
+            <span className="text-sm tracking-[0.15em] uppercase font-medium">{project.title}</span>
           </div>
           <div className="flex items-end justify-between gap-4">
             <span className="text-2xl font-medium tracking-[-0.06em]">
@@ -45,102 +78,59 @@ function ProjectImage({ project }: { project: Project }) {
           </div>
         </div>
       )}
+
+      {/* Manual Arrow Controls (visible on hover when multiple images) */}
       {images.length > 1 && (
-        <span className="absolute bottom-3 right-3 flex items-center gap-1.5 rounded-full bg-black/65 px-2.5 py-1 text-xs font-mono font-medium text-white shadow-sm backdrop-blur-md">
-          <ImageIcon className="size-3.5" aria-hidden="true" />
-          {images.length}
-        </span>
+        <div className="absolute inset-y-0 inset-x-2 flex items-center justify-between z-30 opacity-0 group-hover/slide:opacity-100 transition-opacity">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation()
+              setCurrentIdx((prev) => (prev > 0 ? prev - 1 : images.length - 1))
+            }}
+            className="flex size-8 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur-md transition-transform hover:scale-110 hover:bg-black/85"
+            aria-label="Previous image"
+          >
+            <ChevronLeft className="size-4" />
+          </button>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation()
+              setCurrentIdx((prev) => (prev < images.length - 1 ? prev + 1 : 0))
+            }}
+            className="flex size-8 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur-md transition-transform hover:scale-110 hover:bg-black/85"
+            aria-label="Next image"
+          >
+            <ChevronRight className="size-4" />
+          </button>
+        </div>
       )}
-    </div>
-  )
-}
 
-function ProjectGallery({ project }: { project: Project }) {
-  const [activeIdx, setActiveIdx] = useState(0)
-  const images = project.images && project.images.length > 0 ? project.images : [project.image || '/placeholder.svg?height=880&width=1250']
-  const currentImg = images[activeIdx] || images[0]
-  const isPlaceholder = currentImg.startsWith('/placeholder.svg')
-  const colorClass = colorClasses[project.color] || colorClasses.sage
-
-  return (
-    <div className="flex flex-col gap-3">
-      <div data-placeholder={isPlaceholder} className={cn('work-image relative overflow-hidden rounded-xl', colorClass)}>
-        <img
-          src={currentImg}
-          alt={`${project.title} - view ${activeIdx + 1}`}
-          width={1250}
-          height={880}
-          loading="lazy"
-          className="absolute inset-0 size-full object-cover transition-opacity duration-200"
-        />
-        {isPlaceholder && (
-          <div className="absolute inset-6 flex flex-col justify-between md:inset-8">
-            <div className="flex items-start justify-between gap-4">
-              <span className="text-sm tracking-[0.12em] uppercase">{project.category}</span>
-            </div>
-            <div className="flex flex-col items-center gap-3 text-center">
-              <ImageIcon className="size-8 opacity-50" strokeWidth={1} aria-hidden="true" />
-              <span className="text-sm tracking-[0.15em] uppercase">{project.title}</span>
-            </div>
-            <div className="flex items-end justify-between gap-4">
-              <span className="text-2xl font-medium tracking-[-0.06em]">
-                {useContent('tailored_portfolio_img_label_1', 'tailored')}
-                <span className="font-serif italic">{useContent('tailored_portfolio_img_label_2', ' showcase')}</span>
-              </span>
-            </div>
-          </div>
-        )}
-        {images.length > 1 && (
-          <div className="absolute bottom-3 right-3 flex items-center gap-1.5 rounded-full bg-black/70 px-2.5 py-1 text-xs font-mono font-medium text-white shadow-sm backdrop-blur-md">
-            <span>{activeIdx + 1} / {images.length}</span>
-          </div>
-        )}
-        {images.length > 1 && (
-          <div className="absolute inset-y-0 inset-x-2 flex items-center justify-between pointer-events-none">
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation()
-                setActiveIdx((prev) => (prev > 0 ? prev - 1 : images.length - 1))
-              }}
-              className="pointer-events-auto flex size-8 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur-md transition-transform hover:scale-110 hover:bg-black/80"
-              aria-label="Previous image"
-            >
-              <ChevronLeft className="size-4" />
-            </button>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation()
-                setActiveIdx((prev) => (prev < images.length - 1 ? prev + 1 : 0))
-              }}
-              className="pointer-events-auto flex size-8 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur-md transition-transform hover:scale-110 hover:bg-black/80"
-              aria-label="Next image"
-            >
-              <ChevronRight className="size-4" />
-            </button>
-          </div>
-        )}
-      </div>
-
+      {/* Dots Indicator & Counter */}
       {images.length > 1 && (
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 pt-0.5">
-          {images.map((img, idx) => (
-            <button
-              key={idx}
-              type="button"
-              onClick={() => setActiveIdx(idx)}
-              className={cn(
-                'relative size-16 shrink-0 overflow-hidden rounded-lg border-2 transition-all',
-                idx === activeIdx
-                  ? 'border-primary ring-2 ring-primary/40 scale-105'
-                  : 'border-border/60 opacity-60 hover:opacity-100'
-              )}
-              aria-label={`Switch to image ${idx + 1}`}
-            >
-              <img src={img} alt="" className="size-full object-cover" />
-            </button>
-          ))}
+        <div className="absolute bottom-3 inset-x-3 flex items-center justify-between z-30 pointer-events-auto">
+          <div className="flex items-center gap-1.5 bg-black/50 backdrop-blur-md px-2.5 py-1 rounded-full">
+            {images.map((_, dotIdx) => (
+              <button
+                key={dotIdx}
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setCurrentIdx(dotIdx)
+                }}
+                className={cn(
+                  'h-1.5 rounded-full transition-all duration-300',
+                  dotIdx === currentIdx ? 'w-4 bg-white' : 'w-1.5 bg-white/50 hover:bg-white/80'
+                )}
+                aria-label={`Go to slide ${dotIdx + 1}`}
+              />
+            ))}
+          </div>
+
+          <span className="rounded-full bg-black/55 backdrop-blur-md px-2 py-0.5 text-[11px] font-mono text-white/90">
+            {currentIdx + 1}/{images.length}
+          </span>
         </div>
       )}
     </div>
@@ -149,69 +139,42 @@ function ProjectGallery({ project }: { project: Project }) {
 
 function ProjectCard({ project }: { project: Project }) {
   return (
-    <article className="group">
-      <Dialog>
-        <DialogTrigger
-          className="project-trigger block w-full rounded-lg text-left outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4 focus-visible:ring-offset-background"
-          aria-label={`View project: ${project.title}`}
-        >
-          <ProjectImage project={project} />
-          <div className="flex items-start justify-between gap-4 pt-5">
-            <div className="flex flex-col gap-1.5 flex-1">
-              <h3 className="text-xl font-medium tracking-tight md:text-2xl group-hover:text-primary transition-colors">
-                {project.title}
-              </h3>
-              <p className="text-sm font-medium text-muted-foreground">{project.discipline}</p>
-              {project.shortDescription && (
-                <p className="text-sm leading-relaxed text-foreground/80 line-clamp-2 mt-1">
-                  {project.shortDescription}
-                </p>
-              )}
-            </div>
-            <span className="project-arrow flex size-9 shrink-0 items-center justify-center rounded-full border border-border/60 text-muted-foreground transition-all duration-200 group-hover:border-primary group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 mt-1">
-              <ArrowUpRight className="size-4" aria-hidden="true" />
-            </span>
+    <article className="group flex flex-col gap-4">
+      <ProjectSlideshow project={project} />
+
+      <div className="flex flex-col gap-2 pt-1">
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-xs font-mono uppercase tracking-wider text-muted-foreground">
+            {project.category}
+          </span>
+          <span className="text-xs text-muted-foreground truncate max-w-[55%] text-right">
+            {project.discipline}
+          </span>
+        </div>
+
+        <h3 className="text-xl font-medium tracking-tight md:text-2xl">
+          {project.title}
+        </h3>
+
+        {(project.shortDescription || project.description) && (
+          <p className="text-sm leading-relaxed text-muted-foreground">
+            {project.shortDescription || project.description}
+          </p>
+        )}
+
+        {project.scope && project.scope.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 pt-2">
+            {project.scope.map((item) => (
+              <span
+                key={item}
+                className="rounded-full border border-border/70 bg-muted/20 px-2.5 py-1 text-xs text-muted-foreground"
+              >
+                {item}
+              </span>
+            ))}
           </div>
-        </DialogTrigger>
-        <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-2xl">
-          <DialogHeader>
-            <DialogTitle className="text-2xl">{project.title}</DialogTitle>
-            <DialogDescription className="text-sm">
-              {project.discipline} · <span className="font-medium text-foreground">{project.category}</span>
-            </DialogDescription>
-          </DialogHeader>
-
-          <ProjectGallery project={project} />
-
-          {project.shortDescription && (
-            <p className="text-base font-medium leading-relaxed text-foreground pt-1">
-              {project.shortDescription}
-            </p>
-          )}
-
-          {project.description && project.description !== project.shortDescription && (
-            <p className="text-sm leading-relaxed text-muted-foreground">
-              {project.description}
-            </p>
-          )}
-
-          {project.scope && project.scope.length > 0 && (
-            <div className="flex flex-wrap gap-2 pt-1">
-              {project.scope.map((item) => (
-                <span key={item} className="rounded-full border border-border/80 bg-muted/30 px-3 py-1 text-xs font-medium text-muted-foreground">
-                  {item}
-                </span>
-              ))}
-            </div>
-          )}
-
-          <div className="pt-2">
-            <a href={contact.whatsapp} target="_blank" rel="noopener noreferrer" className="pill-link w-fit">
-              {useContent('tailored_portfolio_card_btn', 'Discuss a similar project')} <ArrowUpRight className="size-4" aria-hidden="true" />
-            </a>
-          </div>
-        </DialogContent>
-      </Dialog>
+        )}
+      </div>
     </article>
   )
 }

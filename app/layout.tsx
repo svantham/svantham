@@ -11,19 +11,39 @@ const dmMono = DM_Mono({ subsets: ['latin'], weight: ['400', '500'], variable: '
 const instrument = Instrument_Serif({ subsets: ['latin'], weight: '400', style: ['normal', 'italic'], variable: '--font-instrument', display: 'swap' })
 
 export const metadata: Metadata = {
-  title: 'Svantham — Your Business. Your Software. Your Rules.',
+  metadataBase: new URL('https://svantham.in'),
+  title: {
+    default: 'Svantham — Your Business. Your Software. Your Rules.',
+    template: '%s | Svantham',
+  },
   description: 'Business software on your terms. Explore CRM, POSS, HRMS, FSM and OMS. Cloud SaaS, no per-seat fees, predictable flat subscription with 1-on-1 support included.',
   applicationName: 'Svantham',
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
     title: 'Svantham — Business software. On your terms.',
     description: 'Cloud workspace. Unlimited users. One predictable subscription with updates and support included. Discover a different kind of business software.',
-    type: 'website',
+    url: 'https://svantham.in',
+    siteName: 'Svantham',
     locale: 'en_IN',
+    type: 'website',
   },
   twitter: {
-    card: 'summary',
+    card: 'summary_large_image',
     title: 'Svantham — Business software. On your terms.',
     description: 'Modern cloud SaaS. No per-seat pricing. Full updates and support included.',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
 }
 
