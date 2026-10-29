@@ -8,6 +8,10 @@ export interface Project {
   id: string;
   title: string;
   category: 'Software' | 'Content' | 'Digital marketing' | string;
+  client?: string;
+  client_name?: string;
+  client_logo?: string;
+  clientLogo?: string;
   images: string[];
   image: string;
   shortDescription: string;

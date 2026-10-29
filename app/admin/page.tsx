@@ -200,6 +200,8 @@ export default function AdminPage() {
         title: 'New Project',
         name: 'New Project',
         category: 'Software',
+        client: '',
+        client_logo: '',
         shortDescription: 'Short project summary for card preview.',
         images: ['/placeholder.svg?height=880&width=1250'],
         image: '/placeholder.svg?height=880&width=1250',
@@ -215,6 +217,17 @@ export default function AdminPage() {
       const arr = [...(prev.tailoredPortfolio || [])];
       arr.splice(index, 1);
       return { ...prev, tailoredPortfolio: arr };
+    });
+  };
+
+  const moveTailoredPortfolio = (index: number, direction: number) => {
+    setData((prev) => {
+      if (!prev) return prev;
+      const updated = [...(prev.tailoredPortfolio || [])];
+      const target = index + direction;
+      if (target < 0 || target >= updated.length) return prev;
+      [updated[index], updated[target]] = [updated[target], updated[index]];
+      return { ...prev, tailoredPortfolio: updated };
     });
   };
 
@@ -420,7 +433,7 @@ export default function AdminPage() {
 
   const [uploadingPortfolioIndex, setUploadingPortfolioIndex] = useState<number | null>(null);
 
-  const handlePortfolioUpload = async (file: File, portfolioIndex: number, field: 'logo' | 'images') => {
+  const handlePortfolioUpload = async (file: File, portfolioIndex: number, field: 'client_logo' | 'logo' | 'images') => {
     setUploadingPortfolioIndex(portfolioIndex);
     setStatus('UPLOADING TO R2...');
     try {
@@ -428,13 +441,21 @@ export default function AdminPage() {
       setData((prev) => {
         if (!prev) return prev;
         const arr = [...(prev.tailoredPortfolio || [])];
-        const currentImages = Array.isArray(arr[portfolioIndex].images) ? arr[portfolioIndex].images : [];
-        const newImages = [...currentImages, publicUrl];
-        arr[portfolioIndex] = {
-          ...arr[portfolioIndex],
-          images: newImages,
-          image: arr[portfolioIndex].image || publicUrl,
-        };
+        if (field === 'client_logo' || field === 'logo') {
+          arr[portfolioIndex] = {
+            ...arr[portfolioIndex],
+            client_logo: publicUrl,
+            clientLogo: publicUrl,
+          };
+        } else {
+          const currentImages = Array.isArray(arr[portfolioIndex].images) ? arr[portfolioIndex].images : [];
+          const newImages = [...currentImages, publicUrl];
+          arr[portfolioIndex] = {
+            ...arr[portfolioIndex],
+            images: newImages,
+            image: arr[portfolioIndex].image || publicUrl,
+          };
+        }
         return { ...prev, tailoredPortfolio: arr };
       });
       setStatus('UPLOAD COMPLETE ✓');
@@ -938,7 +959,7 @@ export default function AdminPage() {
 
                   return (
                     <div key={proj.id || pIdx} className="rounded-2xl bg-[#0c0e16] p-6 border border-white/10 flex flex-col gap-5">
-                      {/* Header with Title and Delete */}
+                      {/* Header with Title and Actions */}
                       <div className="flex items-center gap-4">
                         <input
                           type="text"
@@ -950,13 +971,34 @@ export default function AdminPage() {
                           className="font-bold text-xl bg-transparent outline-none border-b border-transparent focus:border-[#b8ef3e] text-white flex-1 text-left"
                           placeholder="Project Title (e.g. Operations, simplified.)"
                         />
-                        <button
-                          type="button"
-                          onClick={() => deleteTailoredPortfolio(pIdx)}
-                          className="text-[10px] font-mono text-[#ff7059] hover:underline px-2 py-1"
-                        >
-                          DELETE
-                        </button>
+                        <div className="flex items-center gap-1 shrink-0">
+                          <button
+                            type="button"
+                            onClick={() => moveTailoredPortfolio(pIdx, -1)}
+                            disabled={pIdx === 0}
+                            className="px-2 py-1 text-xs font-mono border border-white/10 rounded disabled:opacity-25 hover:border-[#b8ef3e] transition text-white"
+                            title="Move Up"
+                          >
+                            ↑
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => moveTailoredPortfolio(pIdx, 1)}
+                            disabled={pIdx === (data.tailoredPortfolio || []).length - 1}
+                            className="px-2 py-1 text-xs font-mono border border-white/10 rounded disabled:opacity-25 hover:border-[#b8ef3e] transition text-white"
+                            title="Move Down"
+                          >
+                            ↓
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => deleteTailoredPortfolio(pIdx)}
+                            className="text-xs font-mono text-[#ff7059] px-2 py-1 hover:bg-[#ff7059]/10 rounded"
+                            title="Delete Project"
+                          >
+                            ✕
+                          </button>
+                        </div>
                       </div>
 
                       {/* Category & Scope Tags */}
@@ -997,6 +1039,70 @@ export default function AdminPage() {
                               ))}
                             </div>
                           )}
+                        </div>
+                      </div>
+
+                      {/* Client & Client Logo */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-[10px] font-mono text-white/40 uppercase mb-1">Client Name</label>
+                          <input
+                            type="text"
+                            value={proj.client || proj.client_name || ''}
+                            onChange={(e) => {
+                              updateTailoredPortfolio(pIdx, 'client', e.target.value);
+                              updateTailoredPortfolio(pIdx, 'client_name', e.target.value);
+                            }}
+                            placeholder="e.g. Acme Corp"
+                            className="w-full bg-[#171a25] border border-white/10 rounded-lg p-2.5 text-xs outline-none focus:border-[#b8ef3e] text-white"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-mono text-white/40 uppercase mb-1">Client Logo (URL or Upload)</label>
+                          <div className="flex items-center gap-2">
+                            {(proj.client_logo || proj.clientLogo) && (
+                              <div className="relative w-9 h-9 rounded-lg bg-black/50 border border-white/10 flex-shrink-0 flex items-center justify-center overflow-hidden p-1">
+                                <img
+                                  src={resolveImageUrl(proj.client_logo || proj.clientLogo || '')}
+                                  alt="client logo preview"
+                                  className="max-w-full max-h-full object-contain"
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    updateTailoredPortfolio(pIdx, 'client_logo', '');
+                                    updateTailoredPortfolio(pIdx, 'clientLogo', '');
+                                  }}
+                                  className="absolute inset-0 bg-black/80 text-[#ff7059] opacity-0 hover:opacity-100 flex items-center justify-center text-[10px] font-mono transition"
+                                  title="Remove logo"
+                                >
+                                  ✕
+                                </button>
+                              </div>
+                            )}
+                            <input
+                              type="text"
+                              value={proj.client_logo || proj.clientLogo || ''}
+                              onChange={(e) => {
+                                updateTailoredPortfolio(pIdx, 'client_logo', e.target.value);
+                                updateTailoredPortfolio(pIdx, 'clientLogo', e.target.value);
+                              }}
+                              placeholder="e.g. /images/client-logo.svg or https://..."
+                              className="flex-1 bg-[#171a25] border border-white/10 rounded-lg p-2.5 text-xs outline-none focus:border-[#b8ef3e] text-white"
+                            />
+                            <label className="cursor-pointer inline-flex items-center justify-center px-3 py-2.5 rounded-lg bg-white/10 hover:bg-[#b8ef3e]/20 text-[#b8ef3e] text-[10px] font-mono font-bold transition border border-white/10 hover:border-[#b8ef3e]/50 flex-shrink-0">
+                              UPLOAD
+                              <input
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                onChange={(e) => {
+                                  const file = e.target.files?.[0];
+                                  if (file) handlePortfolioUpload(file, pIdx, 'client_logo');
+                                }}
+                              />
+                            </label>
+                          </div>
                         </div>
                       </div>
 

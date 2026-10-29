@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import { redis } from '@/lib/redis';
+import { invalidateSvanthamCache } from '@/lib/get-data';
+import { revalidatePath } from 'next/cache';
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -31,6 +33,11 @@ export async function POST(req: Request) {
         console.warn('Could not write to local content.json and Redis is not configured:', fsErr);
       }
     }
+
+    invalidateSvanthamCache();
+    try {
+      revalidatePath('/', 'layout');
+    } catch {}
 
     return NextResponse.json({ success: true, savedToRedis });
   } catch (error: any) {

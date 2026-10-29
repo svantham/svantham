@@ -10,6 +10,8 @@ import { Separator } from '@/components/tailored/ui/separator'
 import { getSvanthamData } from '@/lib/get-data'
 import { DataProvider } from '@/components/data-provider'
 
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: 'Tailored by Svantham — Bespoke Software & Custom Platforms',
   description: 'Custom software, internal platforms, and thoughtful digital engineering built around your business. Not off the shelf. Made just for you.',

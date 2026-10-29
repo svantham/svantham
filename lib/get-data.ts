@@ -19,6 +19,10 @@ export interface TailoredProjectItem {
   title: string;
   name?: string;
   category: 'Software' | 'Content' | 'Digital marketing' | string;
+  client?: string;
+  client_name?: string;
+  client_logo?: string;
+  clientLogo?: string;
   shortDescription?: string;
   short_description?: string;
   images: string[];
@@ -59,13 +63,24 @@ export interface SvanthamData {
   [key: string]: any;
 }
 
+let memoryCache: { data: SvanthamData; timestamp: number } | null = null;
+const CACHE_TTL_MS = 60 * 1000;
+
+export function invalidateSvanthamCache() {
+  memoryCache = null;
+}
+
 export async function getSvanthamData(): Promise<SvanthamData> {
+  if (memoryCache && (Date.now() - memoryCache.timestamp < CACHE_TTL_MS)) {
+    return memoryCache.data;
+  }
+
   try {
     const raw = await redis?.get('svantham_data');
 
     const data = typeof raw === 'string' ? JSON.parse(raw) : raw;
 
-    return {
+    const result: SvanthamData = {
       content: { ...(data?.content || {}) },
       modules: data?.modules || [],
       deploymentCards: data?.deploymentCards || [],
@@ -73,8 +88,16 @@ export async function getSvanthamData(): Promise<SvanthamData> {
       tailoredPortfolio: data?.tailoredPortfolio || [],
       products: { ...(data?.products || {}) },
     };
+
+    memoryCache = {
+      data: result,
+      timestamp: Date.now(),
+    };
+
+    return result;
   } catch (err) {
     console.warn('Failed to read from Upstash Redis', err);
+    if (memoryCache) return memoryCache.data;
     return {} as SvanthamData;
   }
 }
