@@ -2,7 +2,7 @@
 
 import { useRef, useState, type PointerEvent } from "react"
 import { AnimatePresence, motion, useReducedMotion, useScroll, useSpring, useTransform } from "motion/react"
-import { ArrowDown, ArrowUpRight, Check, Cloud, Infinity as InfinityIcon, LayoutGrid, LockKeyhole, MonitorPlay, Server, ShieldCheck, UsersIcon } from "lucide-react"
+import { ArrowUpRight, Check, Cloud, Infinity as InfinityIcon, LayoutGrid, LockKeyhole, MonitorPlay, Server, ShieldCheck, UsersIcon } from "lucide-react"
 import { buttonVariants } from "@/components/ui/button"
 import { AnimatedHeading, Reveal, SectionLabel } from "@/components/landing/motion"
 import { useContent } from "@/components/data-provider"
@@ -81,7 +81,6 @@ export function Hero() {
   const heroTitle3 = useContent('landing_home_hero_title3', 'Your rules.');
   const heroDesc = useContent('landing_home_hero_desc', 'Powerful software with dedicated VPS performance and 5 GB storage. Not per-seat. Not needlessly complicated. Just built for the way you do business.');
   const heroBtn1 = useContent('landing_home_hero_btn1', 'Explore our products');
-  const heroBtn2 = useContent('landing_home_hero_btn2', 'Common questions');
   const heroPrice = useContent('landing_home_hero_price', '₹1,000 / month. Unlimited users. 1 on 1 support.');
 
   return (
@@ -94,7 +93,6 @@ export function Hero() {
           <Reveal delay={0.35}>
             <div className="hero-actions">
               <a href="#products" className={cn(buttonVariants({ size: "lg" }), "hero-cta")}>{heroBtn1}<ArrowUpRight data-icon="inline-end" /></a>
-              <a href="#faq" className="text-link">{heroBtn2}<ArrowDown className="size-4" aria-hidden="true" /></a>
             </div>
             <div className="hero-price"><span className="price-dot" aria-hidden="true" /><span><strong>{heroPrice.split('. ')[0]}.</strong> {heroPrice.split('. ').slice(1).join('. ')}</span></div>
           </Reveal>

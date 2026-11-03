@@ -7,7 +7,6 @@ import { ArrowRight, ArrowUpRight, Menu, X } from "lucide-react"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Brand } from "@/components/landing/motion"
 import { ProductsDropdown, productList } from "@/components/navigation/products-dropdown"
-import { contact } from "@/lib/site-content"
 import { useContent } from "@/components/data-provider"
 import { cn } from "@/lib/utils"
 
@@ -34,15 +33,13 @@ export function Header() {
           <nav className="hidden items-center justify-center gap-6 lg:gap-8 md:flex" aria-label="Main navigation">
             <ProductsDropdown />
             <a className="nav-link" href="#products">{useContent('landing_nav_suite', 'The Suite')}</a>
-            <Link className="nav-link" href="/tailored">{useContent('landing_nav_tailored', 'Tailored Studio')}</Link>
             <a className="nav-link" href="#faq">{useContent('landing_nav_faq', 'FAQs')}</a>
-            <a className="nav-link" href={`mailto:${contact.email}`}>{useContent('landing_nav_contact', 'Contact')}</a>
           </nav>
 
           <div className="flex flex-1 items-center justify-end gap-3">
-            <a href="#products" className={cn(buttonVariants({ variant: "default", size: "lg" }), "header-cta hidden md:inline-flex")}>
-              {useContent('landing_nav_cta', 'Find your software')}<ArrowUpRight data-icon="inline-end" />
-            </a>
+            <Link href="/tailored" className={cn(buttonVariants({ variant: "default", size: "lg" }), "header-cta hidden md:inline-flex")}>
+              Tailored<ArrowUpRight data-icon="inline-end" />
+            </Link>
             <Button
               className="md:hidden"
               variant="outline"
@@ -82,21 +79,12 @@ export function Header() {
                       <ArrowUpRight className="size-4 text-muted-foreground" />
                     </Link>
                   ))}
-                  <Link
-                    href="/tailored"
-                    onClick={() => setOpen(false)}
-                    className="flex items-center justify-between px-2 py-1.5 text-base font-medium text-primary rounded-lg hover:bg-primary/10"
-                  >
-                    <span>Tailored (Custom Software)</span>
-                    <ArrowUpRight className="size-4" />
-                  </Link>
                 </div>
                 <a className="px-2 py-1.5 text-base font-medium" href="#products" onClick={() => setOpen(false)}>{useContent('landing_nav_suite', 'The Suite')}</a>
                 <a className="px-2 py-1.5 text-base font-medium" href="#faq" onClick={() => setOpen(false)}>{useContent('landing_nav_faq', 'FAQs')}</a>
-                <a className="px-2 py-1.5 text-base font-medium" href={`mailto:${contact.email}`} onClick={() => setOpen(false)}>{useContent('landing_nav_contact', 'Contact')}</a>
-                <a href="#products" onClick={() => setOpen(false)} className={cn(buttonVariants({ variant: "default", size: "lg" }), "w-full justify-center mt-2")}>
-                  {useContent('landing_nav_cta', 'Find your software')}<ArrowUpRight data-icon="inline-end" />
-                </a>
+                <Link href="/tailored" onClick={() => setOpen(false)} className={cn(buttonVariants({ variant: "default", size: "lg" }), "w-full justify-center mt-2")}>
+                  Tailored<ArrowUpRight data-icon="inline-end" />
+                </Link>
               </div>
             </motion.nav>
           )}

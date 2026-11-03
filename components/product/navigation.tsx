@@ -10,10 +10,11 @@ import { ProductsDropdown, productList } from '@/components/navigation/products-
 import { useProductMotion } from './motion'
 import { cn } from '@/lib/utils'
 
-export function ProductNavigation({ id }: { id?: string }) {
+export function ProductNavigation({ id }: { id: string }) {
   const { enabled } = useProductMotion()
   const [open, setOpen] = useState(false)
   const productUpper = id ? id.toUpperCase() : 'PRODUCT'
+  const onboardingUrl = `https://${id}.svantham.in/onboarding`
 
   return (
     <header className="site-header sticky top-0 z-30 border-b border-border/60 bg-background/90 backdrop-blur-xl">
@@ -37,7 +38,7 @@ export function ProductNavigation({ id }: { id?: string }) {
         {/* Right CTA / Mobile Toggle */}
         <div className="flex flex-1 items-center justify-end gap-3">
           <a
-            href="#pricing"
+            href={onboardingUrl}
             className={cn(buttonVariants({ variant: 'default', size: 'lg' }), 'header-cta hidden md:inline-flex')}
           >
             Get started<ArrowUpRight data-icon="inline-end" />
@@ -100,7 +101,7 @@ export function ProductNavigation({ id }: { id?: string }) {
               <a className="px-2 py-1.5 text-base font-medium" href="#faqs" onClick={() => setOpen(false)}>FAQs</a>
 
               <a
-                href="#pricing"
+                href={onboardingUrl}
                 onClick={() => setOpen(false)}
                 className={cn(buttonVariants({ variant: 'default', size: 'lg' }), 'w-full justify-center mt-2')}
               >

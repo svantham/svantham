@@ -96,7 +96,7 @@ export function Pricing({ productId }: { productId?: string } = {}) {
                   <li><Check className="size-4 text-primary" aria-hidden="true" />{useContent('landing_pricing_sv_feat_2', 'Fully managed cloud workspace')}</li>
                   <li><Check className="size-4 text-primary" aria-hidden="true" />{useContent('landing_pricing_sv_feat_3', 'Continuous updates & 1-on-1 support included')}</li>
                 </ul>
-                <a href="#products" className={cn(buttonVariants({ size: "lg" }), "pricing-cta w-full mt-6")}>{useContent('landing_pricing_sv_cta', 'Find your software')}<ArrowUpRight className="ml-2 size-4" /></a>
+                <a href={productId ? `https://${productId}.svantham.in/onboarding` : '#products'} className={cn(buttonVariants({ size: "lg" }), "pricing-cta w-full mt-6")}>{useContent('landing_pricing_sv_cta', 'Find your software')}<ArrowUpRight className="ml-2 size-4" /></a>
               </div>
             </div>
 

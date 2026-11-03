@@ -20,7 +20,6 @@ export function Products() {
   const l_prod_h1 = useContent('landing_prod_h1', 'Big on capability.');
   const l_prod_h2 = useContent('landing_prod_h2', 'Not on complexity.');
   const l_prod_intro = useContent('landing_prod_intro', 'Five focused products. One refreshingly fair approach. Find the right tools for your next chapter.');
-  const l_prod_cap = useContent('landing_prod_cap', 'Different jobs. The same promise: your software, on your terms.');
   const reduced = useReducedMotion()
 
   const displayProducts = products.map(p => {
@@ -59,7 +58,6 @@ export function Products() {
             </Link>
           </motion.div>
         </Reveal>
-        <Reveal><p className="products-caption mt-6"><span className="size-1.5 rounded-full bg-primary" aria-hidden="true" />{l_prod_cap}</p></Reveal>
       </div>
     </section>
   )
